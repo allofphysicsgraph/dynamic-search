@@ -1,0 +1,383 @@
+{% extends "_base.html" %}
+{% from "_form_macros.html" import render_field %}
+
+{% block content %}
+
+<input type="radio"
+       name="radSize"
+       id="generic_test"
+       value="false" checked="checked" onclick="enable(false)" />
+    <label for="generic_test">Generic Test</label>
+
+    <input type="radio"
+           name="radSize"
+           id="project_test"
+           value="true" onclick="enable(true)" /><label for="project_test">Project Test</label>
+    <table align="left">
+        <tr>
+        <tr>
+            <td width="126" height="24" align="left"
+                valign="middle">
+                <span class="f1">Project ID <span class="star">*</span></span>
+            </td>
+            <td width="126" height="24" align="left"
+                valign="middle">
+                <input type="text"
+                       name="project_id" id="project_id" size="19" 
+                       value="" disabled="disabled">
+            </td>
+        </tr>
+        <tr>
+            <td height="24" width="50" align="left"
+                valign="middle">
+                <span class="f1"> Multiphase <span class="star">*</span></span>
+            </td>
+            <td align="left" valign="middle" nowrap="nowrap">
+                <select name="multiphase"
+                        id="multiphase"
+                        onchange="onChangeFunction();" disabled="disabled">
+
+                    <option value='' selected></option>
+                    <option value='Yes'>Yes</option>
+                    <option value='No'>No</option>
+                </select>
+            </td>
+        </tr>
+        <div>
+            <tr>
+                <td class="f1">Text Area<br><span class="star">*</span>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <textarea id="textInputField3"
+                              name="textInputField3"
+                              style="resize:vertical; text-align:top;  "
+                              rows="5"
+                              cols="52"
+                              disabled="disabled"></textarea>
+                </td>
+            </tr>
+        </div>
+        </tr>
+    </table>
+
+<script>
+
+function enable(enabled){
+  var project = document.getElementById('project_id'),
+      multiphase = document.getElementById('multiphase');
+      textInputField3 = document.getElementById('textInputField3');
+      pdg = document.getElementById('pdg');
+  if(enabled){
+    project.removeAttribute('disabled');
+    multiphase.removeAttribute('disabled');
+    textInputField3.removeAttribute('disabled');
+    pdg.removeAttribute('disabled');
+  } else {
+    project.setAttribute('disabled','disabled');
+    multiphase.setAttribute('disabled','disabled');
+    textInputField3.setAttribute('disabled','disabled');
+    pdg.setAttribute('disabled','disabled');
+  }
+}
+
+</script>
+
+
+<P>name of derivation: {{ name_of_derivation }}</P>
+<P>inference rule: {{ inf_rule }}: <BR>
+{{ inf_rule_dict['latex'] }}
+</P>
+<!-- https://stackoverflow.com/questions/28375565/add-input-fields-dynamically-with-wtforms -->
+
+<form method="post" action="">
+  <!-- https://flask-wtf.readthedocs.io/en/v0.12/csrf.html -->
+  {{ webform.csrf_token }}
+  <div class="form-group">
+    <div class="input-group">
+<P>
+{{ webform.input1_radio(onclick='enable(true)') }}
+</P>
+
+{% if inf_rule_dict['number of inputs']|int() > 0|int() %}
+<P>
+  <table border="1">
+  <!-- from https://wtforms.readthedocs.io/en/stable/fields.html#basic-fields -->
+  <!-- and https://stackoverflow.com/questions/40086613/ansible-jinja2-string-comparison -->
+  <!-- and https://stackoverflow.com/questions/20233721/how-do-you-index-on-a-jinja-template -->
+  {% for subfield in webform.input1_radio %}
+    <tr>
+      <td>{{  subfield(onclick='enable1(true); enable2(false); enable3(false)') }}</td>
+      <td>{{ subfield.label }}</td>
+    {% if loop.index0 == 0 %}
+        <td>
+          <!-- https://css-tricks.com/exposing-form-fields-radio-button-css/ -->
+          <!-- https://github.com/allofphysicsgraph/proofofconcept/issues/130 -->
+          <!-- <div class="reveal-if-active"> -->
+           {{ webform.input1.label }}: {{ webform.input1(id="pdg", size=50, maxlength=300, onchange="onChangeFunction();", disabled="disabled") }}<BR>
+           <small>max length = 300 characters</small>
+          </div>
+        </td>
+        <td>{{ webform.input1_name.label }}: {{ webform.input1_name(size=20, maxlength=300, id="pdg", onchange="onChangeFunction();", disabled="disabled") }}</td>
+        <td>{{ webform.input1_note.label }}: {{ webform.input1_note(size=20, maxlength=300) }}</td>
+    {% elif loop.index0 == 1 %}
+      <td>
+        <span class="input-group-addon">Select from</span>
+          <select name="input1_local_id" class="selectpicker form-control">
+            {% for elem in list_of_local_id %}
+            <option value="{{ elem }}">{{ elem }}</option>
+            {% endfor %}
+          </select>
+      </td>
+    {% elif loop.index0 == 2 %}
+      <td>
+        <span class="input-group-addon">Select from</span>
+          <select name="input1_global_id" class="selectpicker form-control">
+            {% for elem in list_of_global_id_not_in_derivation %}
+            <option value="{{ elem }}">{{ elem }}</option>
+            {% endfor %}
+          </select>
+      </td>
+    {% else %}
+      <td>
+        Error in radio field
+      </td>
+    {% endif %}
+    </tr>
+  {% endfor %}
+  </table>
+{% endif %}
+
+{% if inf_rule_dict['number of inputs']|int() > 1|int() %}
+<P>
+  <table border="1">
+  {% for subfield in webform.input2_radio %}
+    <tr>
+      <td>{{ subfield }}</td>
+      <td>{{ subfield.label }}</td>
+    {% if loop.index0 == 0 %}
+      <td>{{ webform.input2.label }}: {{ webform.input2(size=50, maxlength=300) }} <BR>
+           <small>max length = 300 characters</small></td>
+      <td>{{ webform.input2_name.label }}: {{ webform.input2_name(size=20, maxlength=300) }}</td>
+      <td>{{ webform.input2_note.label }}: {{ webform.input2_note(size=20, maxlength=300) }}</td>
+    {% elif loop.index0 == 1 %}
+      <td>
+        <span class="input-group-addon">Select from</span>
+          <select name="input2_local_id" class="selectpicker form-control">
+            {% for elem in list_of_local_id %}
+            <option value="{{ elem }}">{{ elem }}</option>
+            {% endfor %}
+          </select>
+      </td>
+    {% elif loop.index0 == 2 %}
+      <td>
+        <span class="input-group-addon">Select from</span>
+          <select name="input2_global_id" class="selectpicker form-control">
+            {% for elem in list_of_global_id_not_in_derivation %}
+            <option value="{{ elem }}">{{ elem }}</option>
+            {% endfor %}
+          </select>
+      </td>
+    {% else %}
+      <td>
+        Error in radio field
+      </td>
+    {% endif %}
+    </tr>
+  {% endfor %}
+  </table>
+</P>
+{% endif %}
+
+<P>
+{% if inf_rule_dict['number of inputs']|int() > 2|int() %}
+  <table border="1">
+  {% for subfield in webform.input3_radio %}
+    <tr>
+      <td>{{ subfield }}</td>
+      <td>{{ subfield.label }}</td>
+    {% if loop.index0 == 0 %}
+      <td>{{ webform.input3.label }}: {{ webform.input3(size=50, maxlength=300) }} <BR>
+            <small>max length = 300 characters</small></td>
+      <td>{{ webform.input3_name.label }}: {{ webform.input3_name(size=20, maxlength=300) }}</td>
+      <td>{{ webform.input3_note.label }}: {{ webform.input3_note(size=20, maxlength=300) }}</td>
+    {% elif loop.index0 == 1 %}
+      <td>
+        <span class="input-group-addon">Select from</span>
+          <select name="input3_local_id" class="selectpicker form-control">
+            {% for elem in list_of_local_id %}
+            <option value="{{ elem }}">{{ elem }}</option>
+            {% endfor %}
+          </select>
+      </td>
+    {% elif loop.index0 == 2 %}
+      <td>
+        <span class="input-group-addon">Select from</span>
+          <select name="input3_global_id" class="selectpicker form-control">
+            {% for elem in list_of_global_id_not_in_derivation %}
+            <option value="{{ elem }}">{{ elem }}</option>
+            {% endfor %}
+          </select>
+      </td>
+    {% else %}
+      <td>
+        Error in radio field
+      </td>
+    {% endif %}
+    </tr>
+  {% endfor %}
+  </table>
+</P>
+{% endif %}
+
+{% if inf_rule_dict['number of feeds']|int() > 0|int() %}
+<P>{{ webform.feed1.label }}: {{ webform.feed1(size=50, maxlength=100) }} <small>max length = 100 characters</small>
+</P>
+{% endif %}
+
+{% if inf_rule_dict['number of feeds']|int() > 1|int() %}
+<P>{{ webform.feed2.label }}: {{ webform.feed2(size=50, maxlength=100) }} <small>max length = 100 characters</small>
+</P>
+{% endif %}
+
+{% if inf_rule_dict['number of feeds']|int() > 2|int() %}
+<P>{{ webform.feed3.label }}: {{ webform.feed3(size=50, maxlength=100) }} <small>max length = 100 characters</small></td>
+</P>
+{% endif %}
+
+{% if inf_rule_dict['number of outputs']|int() > 0|int() %}
+<P>
+<table border="1">
+{% for subfield in webform.output1_radio %}
+  <tr>
+    <td>{{ subfield }}</td>
+    <td>{{ subfield.label }}</td>
+  {% if loop.index0 == 0 %}
+    <td>{{ webform.output1.label }}: {{ webform.output1(size=50, maxlength=300) }} <BR>
+           <small>max length = 300 characters</small></td>
+      <td>{{ webform.output1_name.label }}: {{ webform.output1_name(size=20, maxlength=300) }}</td>
+      <td>{{ webform.output1_note.label }}: {{ webform.output1_note(size=20, maxlength=300) }}</td>
+  {% elif loop.index0 == 1 %}
+    <td>
+      <span class="output-group-addon">Select from</span>
+        <select name="output1_local_id" class="selectpicker form-control">
+          {% for elem in list_of_local_id %}
+          <option value="{{ elem }}">{{ elem }}</option>
+          {% endfor %}
+        </select>
+    </td>
+  {% elif loop.index0 == 2 %}
+    <td>
+      <span class="output-group-addon">Select from</span>
+        <select name="output1_global_id" class="selectpicker form-control">
+          {% for elem in list_of_global_id_not_in_derivation %}
+          <option value="{{ elem }}">{{ elem }}</option>
+          {% endfor %}
+        </select>
+    </td>
+  {% else %}
+    <td>
+      Error in radio field
+    </td>
+  {% endif %}
+  </tr>
+{% endfor %}
+</table>
+</P>
+{% endif %}
+
+{% if inf_rule_dict['number of outputs']|int() > 1|int() %}
+<P>
+<table border="1">
+{% for subfield in webform.output2_radio %}
+  <tr>
+    <td>{{ subfield }}</td>
+    <td>{{ subfield.label }}</td>
+  {% if loop.index0 == 0 %}
+    <td>{{ webform.output2.label }}: {{ webform.output2(size=50, maxlength=300) }} <BR>
+           <small>max length = 300 characters</small></td>
+      <td>{{ webform.output2_name.label }}: {{ webform.output2_name(size=20, maxlength=300) }}</td>
+      <td>{{ webform.output2_note.label }}: {{ webform.output2_note(size=20, maxlength=300) }}</td>
+  {% elif loop.index0 == 1 %}
+    <td>
+      <span class="output-group-addon">Select from</span>
+        <select name="output2_local_id" class="selectpicker form-control">
+          {% for elem in list_of_local_id %}
+          <option value="{{ elem }}">{{ elem }}</option>
+          {% endfor %}
+        </select>
+    </td>
+  {% elif loop.index0 == 2 %}
+    <td>
+      <span class="output-group-addon">Select from</span>
+        <select name="output2_global_id" class="selectpicker form-control">
+          {% for elem in list_of_global_id_not_in_derivation %}
+          <option value="{{ elem }}">{{ elem }}</option>
+          {% endfor %}
+        </select>
+    </td>
+  {% else %}
+    <td>
+      Error in radio field
+    </td>
+  {% endif %}
+  </tr>
+{% endfor %}
+</table>
+</P>
+{% endif %}
+
+{% if inf_rule_dict['number of outputs']|int() > 2|int() %}
+<P>
+<table border="1">
+{% for subfield in webform.output3_radio %}
+  <tr>
+    <td>{{ subfield }}</td>
+    <td>{{ subfield.label }}</td>
+  {% if loop.index0 == 0 %}
+    <td>{{ webform.output3.label }}: {{ webform3.output(size=50, maxlength=300) }}<BR>
+              <small>max length = 300 characters</small></td>
+      <td>{{ webform.output3_name.label }}: {{ webform.output3_name(size=20, maxlength=300) }}</td>
+      <td>{{ webform.output3_note.label }}: {{ webform.output3_note(size=20, maxlength=300) }}</td>
+  {% elif loop.index0 == 1 %}
+    <td>
+      <span class="output-group-addon">Select from</span>
+        <select name="output3_local_id" class="selectpicker form-control">
+          {% for elem in list_of_local_id %}
+          <option value="{{ elem }}">{{ elem }}</option>
+          {% endfor %}
+        </select>
+    </td>
+  {% elif loop.index0 == 2 %}
+    <td>
+      <span class="output-group-addon">Select from</span>
+        <select name="output3_global_id" class="selectpicker form-control">
+          {% for elem in list_of_global_id_not_in_derivation %}
+          <option value="{{ elem }}">{{ elem }}</option>
+          {% endfor %}
+        </select>
+    </td>
+  {% else %}
+    <td>
+      Error in radio field
+    </td>
+  {% endif %}
+  </tr>
+{% endfor %}
+</table>
+</P>
+{% endif %}
+
+{{ webform.step_note.label}}: {{ webform.step_note }}
+
+
+<P><input type="submit" name="submit_button" value="Submit">
+    </div>
+  </div>
+</form>
+
+<P>
+{% include '_table_of_derivation_steps.html' %}
+
+<P>
+{% include '_table_of_expressions.html' %}
+
+{% endblock %}

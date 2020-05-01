@@ -1,0 +1,58 @@
+<!-- see https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-ii-templates -->
+<html>
+  <head>
+    {% if title %}
+    <title>Physics Derivation Graph: {{ title }}</title>
+    {% else %}
+    <title>Welcome to the Physics Derivation Graph</title>
+    {% endif %}
+
+{% include '_js_head.html' %}
+
+
+
+  </head>
+  <body>
+
+<!-- https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/ -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% if messages|length > 1 %}
+    MESSAGES:
+    {% else %}
+    MESSAGE:
+    {% endif %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+
+<P>
+ <center>
+<svg id='viz'></svg>
+ </center>
+</P>
+
+<form method="post" action="">
+  <!-- https://flask-wtf.readthedocs.io/en/v0.12/csrf.html -->
+  {{ webform.csrf_token }}
+  <div class="form-group">
+    <div class="input-group">
+      {{ webform.text.label }}: {{ webform.text }}
+<P><input type="submit" name="submit_button" value="Submit">
+    </div>
+  </div>
+</form>
+
+{% include '_d3_js.html' %}
+
+
+{% include '_footer.html' %}
+
+    </body>
+</html>

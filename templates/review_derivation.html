@@ -1,0 +1,51 @@
+{% extends "_base.html" %}
+{% block content %}
+
+
+<P>review derivation: {{ name_of_derivation }}
+<P>
+<svg id='viz'></svg>
+<!-- https://chartio.com/resources/tutorials/how-to-resize-an-svg-when-the-window-is-resized-in-d3-js/ -->
+<!--
+results in no visualization and no error message in javascript console
+<svg viewBox="0 0 100 100"  preserveAspectRatio="xMidYMid meet" id="viz"></svg>
+-->
+<!--<div id="container" class="svg-container">
+<svg id='viz'></svg>
+</div>
+-->
+
+<form method="post" action="">
+    <!-- https://flask-wtf.readthedocs.io/en/v0.12/csrf.html -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+<!-- https://stackoverflow.com/questions/19794695/flask-python-buttons -->
+<input type="submit" name="submit_button" value='add another step'>
+<input type="submit" name="submit_button" value="edit existing step">
+<input type="submit" name="submit_button" value="generate tex">
+<input type="submit" name="submit_button" value="generate pdf">
+<input type="submit" name="submit_button" value="rename derivation">
+<input type="submit" name="submit_button" value="return to main menu">
+&nbsp; &nbsp;
+<input type="submit" style="background-color:lightcoral" name="submit_button" value="delete derivation">
+</form>
+
+{% if (pdf_filename != "NONE") %}
+<P><a href="{{ url_for('static', filename=pdf_filename) }}">PDF of derivation</a></P>
+{% endif %}
+
+<P>
+  <a href="{{ url_for('static', filename=name_of_graphviz_png) }}">
+    <img src="{{ url_for('static', filename=name_of_graphviz_png) }}">
+  </a>
+</P>
+
+<P>
+{% include '_table_of_derivation_steps.html' %}
+</P>
+
+
+{% include '_d3_js.html' %}
+
+{% endblock %}
+

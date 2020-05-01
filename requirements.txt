@@ -1,0 +1,6 @@
+Flask
+graphviz
+mypy
+black
+pycallgraph
+WTForms
