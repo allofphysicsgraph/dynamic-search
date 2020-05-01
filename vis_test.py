@@ -7,20 +7,22 @@ def error_log(function_name,error_message):
 def process_file(file_path,file_name,readlines=False,w=False,a=False,data=False):
     try:
         if w and data:
+            print("Write")
+            print(file_path,file_name)
             f = open(file_path+file_name,'w')
             f.write(data)
             f.close()
             return True
 
         if a and data:
+            print("Append")
             f = open(file_path+file_name,'a+')
             f.write(data)
             f.close()
             return True
         
         else:
-            f = open(file_path+file_name,'a+')
-        
+            f = open(file_path+file_name,'r')
         if not readlines:
             file_obj = f.read()
         else:
