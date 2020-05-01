@@ -35,7 +35,7 @@ app.config.from_object(
 )  # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
 app.config[
     "UPLOAD_FOLDER"
-] = "/home/appuser/app/uploads"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+] = "/homeSer/app/uploads"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 app.config[
     "SEND_FILE_MAX_AGE_DEFAULT"
 ] = 0  # https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
@@ -121,12 +121,15 @@ def index():
     >>> index()
     """
     logger.info("[trace]")
-
+    from pudb import set_trace
+    #set_trace()
     webform = SearchString()
-
+    webform
     if request.method == "POST":
         logger.debug("request.form = %s", request.form)
         # request.form = ImmutableMultiDict([('text', 'asdfaf'), ('submit_button', 'Submit')])
+        request_obj = request
+        print(request_obj)
         flash(str(request.form['text']))
 
     try:
