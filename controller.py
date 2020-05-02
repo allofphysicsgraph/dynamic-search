@@ -111,7 +111,10 @@ def after_request(response):
     return response
 
 
-
+@app.route("/graph_components", methods=["GET"])
+def graph_components():
+    graph_components = compute.graph_components_from_files()
+    return json.dumps(graph_components)
 
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/", methods=["GET", "POST"])
@@ -139,7 +142,7 @@ def index():
         logger.error(str(err))
         flash(str(err))
         d3js_json_filename = ""
-
+    print(graph_components)
     return render_template("index.html",
         json_for_d3js=graph_components,
         webform=webform)
