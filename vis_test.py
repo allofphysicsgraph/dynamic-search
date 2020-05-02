@@ -40,7 +40,23 @@ def search_dict_keys(pattern,dct,exact=False):
         for k,v in dct.items():
             if search(k,pattern):
                 match_lst.append({k:v})
-            
+    return match_lst
+
+
+def search_dict_values(pattern,dct,exact=False):
+    import re
+    match_lst = [] 
+    if exact:
+        search = lambda x: True if  re.findall(r'^{}$'.format(pattern),str(x)) else False
+    else:
+        search = lambda x: True if  re.findall("{}".format(pattern),str(x)) else False
+    if isinstance(dct,dict):
+        for k,v in dct.items():
+            if search(v,pattern):
+                match_lst.append({k:v})
+    return match_lst
+
+
 
 def generate_id(lst):
     from random import choice

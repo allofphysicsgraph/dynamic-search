@@ -132,7 +132,10 @@ def index():
         logger.debug("request.form = %s", request.form)
         # request.form = ImmutableMultiDict([('text', 'asdfaf'), ('submit_button', 'Submit')])
         request_obj = request
-        print(request_obj)
+        search_string = request_obj.form['text']
+        graph_components = compute.graph_components_from_files()
+        
+        #vis_test.search_string(search_string,)
         flash(str(request.form['text']))
 
     try:
