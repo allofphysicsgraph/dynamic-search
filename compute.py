@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # global proc_timeout
 proc_timeout = 30
 
-def create_d3js_json() -> str:
+def graph_components_from_files() -> str:
     from vis_test import process_file
     from vis_test import get_edge_list
     from vis_test import get_node_list
@@ -35,4 +35,8 @@ def create_d3js_json() -> str:
     node_list =  get_node_list(data_source,'node_list.json')
     edge_list =  get_edge_list(data_source,'edge_list.json')
     transition_list =  get_transition_list(data_source,'transition_list.json')
-    return node_list,edge_list,transition_list
+    return {
+        "nodes":node_list,
+        "edges":edge_list,
+        "transitions":transition_list
+    }

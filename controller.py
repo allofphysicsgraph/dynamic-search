@@ -133,14 +133,15 @@ def index():
         flash(str(request.form['text']))
 
     try:
-        d3js_json_filename = compute.create_d3js_json()
+        graph_components = compute.graph_components_from_files()
+        print(graph_components)
     except Exception as err:
         logger.error(str(err))
         flash(str(err))
         d3js_json_filename = ""
 
     return render_template("index.html",
-        json_for_d3js=d3js_json_filename,
+        json_for_d3js=graph_components,
         webform=webform)
 
 if __name__ == "__main__":

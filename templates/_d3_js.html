@@ -16,7 +16,7 @@ var border = 1;
 var bordercolor='black';
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-d3.json("{{ url_for('static', filename=json_for_d3js) }}").then(function(graph) {
+d3.json("{{ url_for('static/data_source', filename=node_list) }}").then(function(graph) {
 
 var label = {
     'nodes': [],

@@ -32,6 +32,7 @@
 
 
 
+
 <P>
  <center>
 <svg id='viz'></svg>
@@ -49,10 +50,10 @@
   </div>
 </form>
 
-{% include '_d3_js.html' %}
+{% include '_d3_build_graph.html' %}
 
+<P>{{json_for_d3js}}</P>
 
-{% include '_footer.html' %}
 
     </body>
 </html>
