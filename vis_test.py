@@ -1,4 +1,5 @@
-def process_file(file_path,file_name,readlines=False,w=False,a=False,data=False):
+from pudb import set_trace
+def process_file(file_path,file_name,readlines=False,w=False,a=False,data=False,strip=False):
     try:
         if w and data:
             print("Write")
@@ -20,6 +21,8 @@ def process_file(file_path,file_name,readlines=False,w=False,a=False,data=False)
             file_obj = f.read()
         else:
             file_obj = f.readlines()
+            if strip:
+                file_obj = [x.strip() for x in file_obj if x]
         f.close()
         return file_obj
     
@@ -50,12 +53,10 @@ def generate_id(lst):
         error_message = f"Failed to generate id {almost_now}"
         return error_message
 
-def get_node_list(path,file_name,node_keys=False):
+def get_node_list(path,file_name,node_keys=False,strip=True):
     import json
     if not node_keys:
         node_keys = ["id","group","img", "width", "height", "linear index"] 
-    #from pudb import set_trace
-    #set_trace()
     node_list = []
     json_file = process_file(path,file_name,readlines=True)
     for line in json_file:
@@ -65,22 +66,30 @@ def get_node_list(path,file_name,node_keys=False):
     if node_list:
         return node_list
 
-def get_edge_list(path,file_name):
+def get_edge_list(path,file_name,edge_keys=False,strip=True):
     import json
     if not edge_keys:
         edge_keys = ["source","target", "value"] 
-    file_obj = process_file(path,file_name,'r')
-    dict_json=json.loads(file_obj)
-    if isinstance(dict_json,dict):
-        return dict_json
+    edge_list = []
+    #set_traset_trace()
+    json_file = process_file(path,file_name,readlines=True)
+    for line in json_file:
+        dict_json=json.loads(line) 
+        if isinstance(dict_json,dict):
+            edge_list.append(dict_json)
+    if edge_list:
+        return edge_list
 
 
-def get_transition_list(path,file_name):
+def get_transition_list(path,file_name,transition_keys=False,strip=True):
     import json
-    if not edge_keys:
-        edge_keys = ["source","target", "value"] 
-    file_obj = process_file(path,file_name,'r')
-    dict_json=json.loads(jtopy)
-    if isinstance(dict_json,dict):
-        return dict_json
-
+    if not transition_keys:
+        transition_keys = ["source","target", "value"] 
+    transition_list = []
+    json_file = process_file(path,file_name,readlines=True)
+    for line in json_file:
+        dict_json=json.loads(line) 
+        if isinstance(dict_json,dict):
+            transition_list.append(dict_json)
+    if transition_list:
+        return transition_list

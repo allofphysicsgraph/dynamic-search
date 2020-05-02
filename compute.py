@@ -27,13 +27,12 @@ def create_d3js_json() -> str:
     from vis_test import get_node_list
     from vis_test import get_transition_list
     from pudb import set_trace
-    logger.info("[trace]")
+    #logger.info("[trace]")
     static_path = "/home/user/dynamic-search/static/"
     data_source = static_path + 'data_source/'
     d3js_json_filename = "my_graph.json"
     fil = process_file(data_source, d3js_json_filename, "w",d3js_json_filename)
     node_list =  get_node_list(data_source,'node_list.json')
-    edge_list =  process_file(data_source,'edge_list.json','r')
-    transitions_list =  process_file(data_source,'transitions_list.json','r')
-    print(node_list,edge_list,transitions_list)
-    return node_list,edge_list,transitions_list
+    edge_list =  get_edge_list(data_source,'edge_list.json')
+    transition_list =  get_transition_list(data_source,'transition_list.json')
+    return node_list,edge_list,transition_list
