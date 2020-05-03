@@ -65,8 +65,6 @@ class SearchString(Form):
     )
 
 
-
-
 @app.before_request
 def before_request():
     """
@@ -119,10 +117,6 @@ def graph_components():
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/", methods=["GET", "POST"])
 def index():
-    """
-    the index is a static page intended to be the landing page for new users
-    >>> index()
-    """
     logger.info("[trace]")
     from pudb import set_trace
     #set_trace()
@@ -130,22 +124,26 @@ def index():
     webform
     if request.method == "POST":
         logger.debug("request.form = %s", request.form)
+        search_string = False
         # request.form = ImmutableMultiDict([('text', 'asdfaf'), ('submit_button', 'Submit')])
         request_obj = request
         search_string = request_obj.form['text']
-        graph_components = compute.graph_components_from_files()
-        
+        #set_trace()
+        if search_string:
+            graph_components = compute.graph_components_from_files(search_string)
+        print(graph_components)
+        #set_trace()
         #vis_test.search_string(search_string,)
         flash(str(request.form['text']))
 
     try:
         graph_components = compute.graph_components_from_files()
-        print(graph_components)
+     
     except Exception as err:
         logger.error(str(err))
         flash(str(err))
-        d3js_json_filename = ""
-    print(graph_components)
+        graph_components = ""
+
     return render_template("index.html",
         json_for_d3js=graph_components,
         webform=webform)
