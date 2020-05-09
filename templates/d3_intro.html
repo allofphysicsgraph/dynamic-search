@@ -5,7 +5,10 @@
 </head>
 <body>
 
-
+    <svg id="container" width="720" height="120">
+        <circle cx="40" cy="60" r="10"></circle>
+        
+    </svg>
 <script src="../static/d3.v5.min.js" charset="utf-8"></script>
 <script>
 
@@ -14,6 +17,14 @@ d3.select('body')
 .append('h1')
 .text('Hello World')
 .style('background-color','lightyellow');
+
+function create_circle(cx,cy,r){
+return d3.select('#container')
+.append('circle')
+.attr('cx',cx)
+.attr('cy',cy)
+.attr('r',r)
+.style("fill",'lightblue');}
 
 
 url="http://localhost:5000/graph_components";
@@ -25,10 +36,20 @@ var x = d3.json(url).then(function(graph) {
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
 var p = Promise.resolve(x);
 p.then(function(d){
-    console.log(d.nodes);
+    for (var key of Object.keys(d.nodes)) {
+    for (var value of Object.keys(d.nodes[key])){
+        if (value === 'id') {
+        var idx = d.nodes[key][value];
+            var cx = 100*Math.random(20,40);
+            var cy = 100*Math.random(30,40);
+            var r = 5;
+            console.log(cx);
+            create_circle(cx,cy,r);
+        }}
+
     console.log(d.edges);
     console.log(d.transitions);
-});
+}});
 
 </script>
 </body>
