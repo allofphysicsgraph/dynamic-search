@@ -1,4 +1,3 @@
-<!-- see https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-ii-templates -->
 <html>
   <head>
     {% if title %}
@@ -8,13 +7,9 @@
     {% endif %}
 
 {% include '_js_head.html' %}
+</head>
 
-
-
-  </head>
-  <body>
-
-<!-- https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/ -->
+<body>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     {% if messages|length > 1 %}
@@ -40,8 +35,7 @@
 </P>
 
 <form method="post" action="">
-  <!-- https://flask-wtf.readthedocs.io/en/v0.12/csrf.html -->
-  {{ webform.csrf_token }}
+{{ webform.csrf_token }}
   <div class="form-group">
     <div class="input-group">
       {{ webform.text.label }}: {{ webform.text }}
@@ -53,6 +47,12 @@
 {% include '_d3_js.html' %}
 
 <P>{{json_for_d3js}}</P>
+
+
+<div id="show_results">
+  
+</div>
+
 
 
     </body>

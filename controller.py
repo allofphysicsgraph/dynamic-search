@@ -125,16 +125,18 @@ def index():
     if request.method == "POST":
         logger.debug("request.form = %s", request.form)
         search_string = False
-        # request.form = ImmutableMultiDict([('text', 'asdfaf'), ('submit_button', 'Submit')])
+
         request_obj = request
         search_string = request_obj.form['text']
         #set_trace()
         if search_string:
             graph_components = compute.graph_components_from_files(search_string)
-        print(graph_components)
-        #set_trace()
-        #vis_test.search_string(search_string,)
-        flash(str(request.form['text']))
+            #print(graph_components)
+            return render_template("index.html",
+            json_for_d3js=graph_components,
+            webform=webform)
+
+        
 
     try:
         graph_components = compute.graph_components_from_files()
