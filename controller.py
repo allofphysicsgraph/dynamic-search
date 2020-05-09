@@ -67,13 +67,6 @@ class SearchString(Form):
 
 @app.before_request
 def before_request():
-    """
-    Note: this function need to be before almost all other functions
-
-    https://stackoverflow.com/questions/12273889/calculate-execution-time-for-every-page-in-pythons-flask
-    actually, https://gist.github.com/lost-theory/4521102
-    >>> before_request():
-    """
     g.start = time.time()
     g.request_start_time = time.time()
     elapsed_time = lambda: "%.5f seconds" % (time.time() - g.request_start_time)
@@ -83,13 +76,6 @@ def before_request():
 
 @app.after_request
 def after_request(response):
-    """
-    https://stackoverflow.com/questions/12273889/calculate-execution-time-for-every-page-in-pythons-flask
-
-    I don't know how to access this measure
-
-    >>> after_request()
-    """
     try:
         diff = time.time() - g.start
     except AttributeError as err:
@@ -121,22 +107,16 @@ def index():
     from pudb import set_trace
     #set_trace()
     webform = SearchString()
-    webform
     if request.method == "POST":
         logger.debug("request.form = %s", request.form)
         search_string = False
-
         request_obj = request
         search_string = request_obj.form['text']
-        #set_trace()
         if search_string:
             graph_components = compute.graph_components_from_files(search_string)
-            #print(graph_components)
             return render_template("index.html",
             json_for_d3js=graph_components,
             webform=webform)
-
-        
 
     try:
         graph_components = compute.graph_components_from_files()
