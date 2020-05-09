@@ -94,6 +94,9 @@ def after_request(response):
         )
     return response
 
+@app.route("/d3_intro", methods=["GET"])
+def d3_intro():
+    return render_template("d3_intro.html")
 
 @app.route("/graph_components", methods=["GET"])
 def graph_components():

@@ -7,5 +7,29 @@
 
 
 <script src="../static/d3.v5.min.js" charset="utf-8"></script>
+<script>
+
+d3.select('body')
+.style('background-color','lightgrey')
+.append('h1')
+.text('Hello World')
+.style('background-color','lightyellow');
+
+
+url="http://localhost:5000/graph_components";
+
+var x = d3.json(url).then(function(graph) {
+    return graph;
+});
+
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve
+var p = Promise.resolve(x);
+p.then(function(d){
+    console.log(d.nodes);
+    console.log(d.edges);
+    console.log(d.transitions);
+});
+
+</script>
 </body>
 </html>

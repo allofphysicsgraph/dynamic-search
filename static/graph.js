@@ -1,8 +1,4 @@
-// dimensions for svg
-var WIDTH = 800;
-var HEIGHT = 600;
 
-// run data
 var runs = [
     {
         id: 1,
