@@ -35,7 +35,8 @@
 </P>
 
 <form method="post" action="">
-{{ webform.csrf_token }}
+  <!-- https://flask-wtf.readthedocs.io/en/v0.12/csrf.html -->
+  {{ webform.csrf_token }}
   <div class="form-group">
     <div class="input-group">
       {{ webform.text.label }}: {{ webform.text }}
@@ -48,10 +49,7 @@
 
 <P>{{json_for_d3js}}</P>
 
-
-<div id="show_results">
-  
-</div>
+{% include '_footer.html' %}
 
 
 
