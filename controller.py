@@ -130,46 +130,35 @@ def index():
     """
     logger.info("[trace]")
 
-   
+    from pudb import set_trace
     webform = SearchString()
     if request.method == "POST":
+        #set_trace()
         logger.debug("request.form = %s", request.form)
+        flash(str(request.form['text']))
         search_string = False
         request_obj = request
         search_string = request_obj.form['text']
         if search_string:
             graph_components = compute.graph_components_from_files(search_string)
-            return render_template("index.html",
-            json_for_d3js=graph_components,
-            webform=webform)
+            return graph_components
 
     try:
         graph_components = compute.graph_components_from_files()
-     
+     	#d3js_json_filename = compute.create_d3js_json()
     except Exception as err:
         logger.error(str(err))
         flash(str(err))
         graph_components = ""
+        #d3js_json_filename = ""
 
 
-    print(graph_components)
     return render_template("index.html",
         json_for_d3js=graph_components,
+        #json_for_d3js=d3js_json_filename,
         webform=webform)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
 
 # EOF
-"""    if request.method == "POST":
-        logger.debug("request.form = %s", request.form)
-        # request.form = ImmutableMultiDict([('text', 'asdfaf'), ('submit_button', 'Submit')])
-        flash(str(request.form['text']))
-
-    try:
-        d3js_json_filename = compute.create_d3js_json()
-    except Exception as err:
-        logger.error(str(err))
-        flash(str(err))
-        d3js_json_filename = "
-        """

@@ -38,20 +38,7 @@
  </center>
 </P>
 
-<form method="post" action="">
-  <!-- https://flask-wtf.readthedocs.io/en/v0.12/csrf.html -->
-  {{ webform.csrf_token }}
-  <div class="form-group">
-    <div class="input-group">
-      {{ webform.text.label }}: {{ webform.text }}
-<P><input type="submit" name="submit_button" value="Submit">
-    </div>
-  </div>
-</form>
-
 {% include '_d3_js.html' %}
-
-
 {% include '_footer.html' %}
 
     </body>

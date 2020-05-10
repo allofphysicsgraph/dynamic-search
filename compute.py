@@ -153,8 +153,9 @@ def graph_components_from_files(pattern=False,filter_keys=False,filter_values=Tr
     logger.info("[trace]")
     static_path = "/home/user/Desktop/dynamic-search/static/"
     data_source = static_path + 'data_source/'
-    d3js_json_filename = "my_graph.json"
-    fil = process_file(data_source, d3js_json_filename, "w",d3js_json_filename)
+    #d3js_json_filename = "my_graph.json"
+    #fil = process_file(data_source, d3js_json_filename, "w",d3js_json_filename)
+    #set_trace()
     node_list =  get_node_list(data_source,'node_list.json')
     edge_list =  get_edge_list(data_source,'edge_list.json')
     transition_list =  get_transition_list(data_source,'transition_list.json')
@@ -167,6 +168,7 @@ def graph_components_from_files(pattern=False,filter_keys=False,filter_values=Tr
         "nodes":node_list,
         "links":transition_list
     }
+    print(dct)
     return dct
 
 
@@ -227,6 +229,7 @@ def create_d3js_json() -> str:
     json_str += all_edges
     json_str += "  ]\n"
     json_str += "}\n"
+    print(json_str)
     with open("/home/user/Desktop/dynamic-search/static/" + d3js_json_filename, "w") as fil:
         fil.write(json_str)
 
