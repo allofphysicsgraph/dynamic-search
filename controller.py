@@ -35,7 +35,7 @@ app.config.from_object(
 )  # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
 app.config[
     "UPLOAD_FOLDER"
-] = "/homeSer/app/uploads"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+] = "/home/user/Desktop/dynamic-search/static/my_graph.json"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 app.config[
     "SEND_FILE_MAX_AGE_DEFAULT"
 ] = 0  # https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
@@ -65,8 +65,17 @@ class SearchString(Form):
     )
 
 
+
+
 @app.before_request
 def before_request():
+    """
+    Note: this function need to be before almost all other functions
+
+    https://stackoverflow.com/questions/12273889/calculate-execution-time-for-every-page-in-pythons-flask
+    actually, https://gist.github.com/lost-theory/4521102
+    >>> before_request():
+    """
     g.start = time.time()
     g.request_start_time = time.time()
     elapsed_time = lambda: "%.5f seconds" % (time.time() - g.request_start_time)
@@ -76,6 +85,13 @@ def before_request():
 
 @app.after_request
 def after_request(response):
+    """
+    https://stackoverflow.com/questions/12273889/calculate-execution-time-for-every-page-in-pythons-flask
+
+    I don't know how to access this measure
+
+    >>> after_request()
+    """
     try:
         diff = time.time() - g.start
     except AttributeError as err:
@@ -94,6 +110,8 @@ def after_request(response):
         )
     return response
 
+
+
 @app.route("/d3_intro", methods=["GET"])
 def d3_intro():
     return render_template("d3_intro.html")
@@ -106,9 +124,13 @@ def graph_components():
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/", methods=["GET", "POST"])
 def index():
+    """
+    the index is a static page intended to be the landing page for new users
+    >>> index()
+    """
     logger.info("[trace]")
-    from pudb import set_trace
-    #set_trace()
+
+   
     webform = SearchString()
     if request.method == "POST":
         logger.debug("request.form = %s", request.form)
@@ -129,6 +151,8 @@ def index():
         flash(str(err))
         graph_components = ""
 
+
+    print(graph_components)
     return render_template("index.html",
         json_for_d3js=graph_components,
         webform=webform)
@@ -137,3 +161,15 @@ if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
 
 # EOF
+"""    if request.method == "POST":
+        logger.debug("request.form = %s", request.form)
+        # request.form = ImmutableMultiDict([('text', 'asdfaf'), ('submit_button', 'Submit')])
+        flash(str(request.form['text']))
+
+    try:
+        d3js_json_filename = compute.create_d3js_json()
+    except Exception as err:
+        logger.error(str(err))
+        flash(str(err))
+        d3js_json_filename = "
+        """

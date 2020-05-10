@@ -1,3 +1,4 @@
+<!-- see https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-ii-templates -->
 <html>
   <head>
     {% if title %}
@@ -7,9 +8,13 @@
     {% endif %}
 
 {% include '_js_head.html' %}
-</head>
 
-<body>
+
+
+  </head>
+  <body>
+
+<!-- https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/ -->
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     {% if messages|length > 1 %}
@@ -24,7 +29,6 @@
     </ul>
   {% endif %}
 {% endwith %}
-
 
 
 
@@ -47,11 +51,8 @@
 
 {% include '_d3_js.html' %}
 
-<P>{{json_for_d3js}}</P>
 
 {% include '_footer.html' %}
-
-
 
     </body>
 </html>

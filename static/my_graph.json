@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    {"id": "9913", "group": 1, "img": "/static/error.png", "width": 113, "height": 43, "linear index": 1},
+    {"id": "4942", "group": 1, "img": "/static/error.png", "width": 113, "height": 43, "linear index": 1},
+    {"id": "94922", "group": 1, "img": "/static/error.png", "width": 113, "height": 43, "linear index": 1},
+    {"id": "242492", "group": 1, "img": "/static/error.png", "width": 113, "height": 43, "linear index": 1},
+    {"id": "4241", "group": 1, "img": "/static/error.png", "width": 113, "height": 43, "linear index": 1},
+    {"id": "13942", "group": 1, "img": "/static/error.png", "width": 113, "height": 43, "linear index": 1},
+    {"id": "49424", "group": 1, "img": "/static/error.png", "width": 113, "height": 43, "linear index": 1}
+  ],
+  "links": [
+    {"source": "49424", "target": "242492", "value": 1},
+    {"source": "94922", "target": "9913", "value": 1},
+    {"source": "242492", "target": "13942", "value": 1},
+    {"source": "9913", "target": "4241", "value": 1}
+  ]
+}
