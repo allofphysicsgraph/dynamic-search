@@ -35,7 +35,7 @@ app.config.from_object(
 )  # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
 app.config[
     "UPLOAD_FOLDER"
-] = "/home/user/Desktop/dynamic-search/static/my_graph.json"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+] = "/home/user/dynamic-search/static/my_graph.json"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 app.config[
     "SEND_FILE_MAX_AGE_DEFAULT"
 ] = 0  # https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
@@ -121,6 +121,19 @@ def graph_components():
     graph_components = compute.graph_components_from_files()
     return json.dumps(graph_components)
 
+@app.route("/", methods=["GET", "POST"])
+def ajax():
+    if request.method == "POST":
+        logger.debug("request.form = %s", request.form)
+        #flash(str(request.form['text']))
+        search_string = False
+        request_obj = request
+        search_string = request.form['search_string']
+        if search_string:
+            graph_components = compute.graph_components_from_files(search_string)
+            return graph_components
+
+
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -130,22 +143,19 @@ def index():
     """
     logger.info("[trace]")
 
-    from pudb import set_trace
     webform = SearchString()
     if request.method == "POST":
-        #set_trace()
         logger.debug("request.form = %s", request.form)
-        flash(str(request.form['text']))
+        #flash(str(request.form['text']))
         search_string = False
         request_obj = request
-        search_string = request_obj.form['text']
+        search_string = request.form['search_string']
         if search_string:
             graph_components = compute.graph_components_from_files(search_string)
             return graph_components
 
     try:
         graph_components = compute.graph_components_from_files()
-     	#d3js_json_filename = compute.create_d3js_json()
     except Exception as err:
         logger.error(str(err))
         flash(str(err))

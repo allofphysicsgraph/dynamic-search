@@ -13,6 +13,14 @@
 
   </head>
   <body>
+  <!-- https://gist.github.com/MalphasWats/3031823 -->
+  <h1>Flask AJAX Test</h1>
+<form action="" method="POST">
+<input type="text" name="search_string" id="search_string">
+<input type="button" value="Submit" onclick="return loadXMLDoc()">
+</form>
+<div id="myDiv"></div>
+
 
 <!-- https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/ -->
 {% with messages = get_flashed_messages() %}

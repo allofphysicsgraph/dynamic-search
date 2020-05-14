@@ -26,15 +26,15 @@ from pudb import set_trace
 def process_file(file_path,file_name,readlines=False,w=False,a=False,data=False,strip=False):
     try:
         if w and data:
-            print("Write")
-            print(file_path,file_name)
+            #print("Write")
+            #print(file_path,file_name)
             f = open(file_path+file_name,'w')
             f.write(data)
             f.close()
             return True
 
         if a and data:
-            print("Append")
+            #print("Append")
             f = open(file_path+file_name,'a+')
             f.write(data)
             f.close()
@@ -151,7 +151,7 @@ def graph_components_from_files(pattern=False,filter_keys=False,filter_values=Tr
     from compute import get_transition_list
     from pudb import set_trace
     logger.info("[trace]")
-    static_path = "/home/user/Desktop/dynamic-search/static/"
+    static_path = "/home/user/dynamic-search/static/"
     data_source = static_path + 'data_source/'
     #d3js_json_filename = "my_graph.json"
     #fil = process_file(data_source, d3js_json_filename, "w",d3js_json_filename)
@@ -168,7 +168,7 @@ def graph_components_from_files(pattern=False,filter_keys=False,filter_values=Tr
         "nodes":node_list,
         "links":transition_list
     }
-    print(dct)
+    #print(dct)
     return dct
 
 
@@ -230,7 +230,7 @@ def create_d3js_json() -> str:
     json_str += "  ]\n"
     json_str += "}\n"
     print(json_str)
-    with open("/home/user/Desktop/dynamic-search/static/" + d3js_json_filename, "w") as fil:
+    with open("/home/user/dynamic-search/static/" + d3js_json_filename, "w") as fil:
         fil.write(json_str)
 
     return d3js_json_filename
