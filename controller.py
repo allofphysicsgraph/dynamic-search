@@ -121,38 +121,29 @@ def graph_components():
     graph_components = compute.graph_components_from_files()
     return json.dumps(graph_components)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/ajax", methods=["GET", "POST"])
 def ajax():
     if request.method == "POST":
         logger.debug("request.form = %s", request.form)
         #flash(str(request.form['text']))
         search_string = False
         request_obj = request
-        search_string = request.form['search_string']
+        search_string =next(request.form.keys())
+        
         if search_string:
+            search_string = search_string.strip()
+            
             graph_components = compute.graph_components_from_files(search_string)
+            print(search_string,'*'*1000,graph_components)
             return graph_components
 
 
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/", methods=["GET", "POST"])
 def index():
-    """
-    the index is a static page intended to be the landing page for new users
-    >>> index()
-    """
-    logger.info("[trace]")
 
+    logger.info("[trace]")
     webform = SearchString()
-    if request.method == "POST":
-        logger.debug("request.form = %s", request.form)
-        #flash(str(request.form['text']))
-        search_string = False
-        request_obj = request
-        search_string = request.form['search_string']
-        if search_string:
-            graph_components = compute.graph_components_from_files(search_string)
-            return graph_components
 
     try:
         graph_components = compute.graph_components_from_files()
@@ -160,12 +151,9 @@ def index():
         logger.error(str(err))
         flash(str(err))
         graph_components = ""
-        #d3js_json_filename = ""
-
 
     return render_template("index.html",
         json_for_d3js=graph_components,
-        #json_for_d3js=d3js_json_filename,
         webform=webform)
 
 if __name__ == "__main__":

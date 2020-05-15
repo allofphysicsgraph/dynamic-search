@@ -13,7 +13,7 @@ function loadXMLDoc()
                 }
             }
         };
-        req.open('POST', '/index');
+        req.open('POST', '/ajax');
         req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         var search_string = document.getElementById('search_string').value;
         var postVars = search_string;
