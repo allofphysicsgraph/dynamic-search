@@ -129,13 +129,13 @@ app.url_map.converters['regex'] = RegexConverter
 #@app.route("/ajax", methods=["GET", "POST"])
 @app.route('/<regex("ajax"):uid>-<slug>/')
 def example(uid, slug):
-    # flash(str(request.form['text']))
+
     search_string = False
     search_string = slug
     if search_string:
         search_string = search_string.strip()
-        graph_components = compute.graph_components_from_files(search_string)
-        print(search_string, "*" * 1000, graph_components)
+        graph_components = compute.graph_components_from_files()
+
         return graph_components
 
 

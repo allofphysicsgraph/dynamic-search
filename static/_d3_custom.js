@@ -9,21 +9,11 @@ function draw_graph(url){
     var color = d3.scaleOrdinal(d3.schemeCategory10);  
     
   
-
-
-    if ( url.match(/ajax.*/) ) {
-        var search_string = document.getElementById('search_string').value;
-        url = 'http://localhost:5000/ajax-' + search_string;
-
-    }
-
-    console.log(url);
-    var p = d3.json(url).then(function(graph){
+    var p = d3.json(default_url).then(function(graph){
             return graph;
         });
    
-    
-  
+      
    
 
     var p_resolve = Promise.resolve(p);
@@ -43,7 +33,7 @@ function draw_graph(url){
             target: i * 2 + 1
         });
     });
-    console.log(label.nodes);
+  
 
 
     var labelLayout = d3.forceSimulation(label.nodes)
@@ -59,6 +49,11 @@ function draw_graph(url){
         .on("tick", ticked);
 
     var adjlist = [];
+
+    graph.links.forEach(function(d) {
+        adjlist[d.source.index + "-" + d.target.index] = true;
+        adjlist[d.target.index + "-" + d.source.index] = true;
+    });
 
     function neigh(a, b) {
         return a == b || adjlist[a + "-" + b];
