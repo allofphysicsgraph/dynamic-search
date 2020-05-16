@@ -134,9 +134,11 @@ def example(uid, slug):
     search_string = slug
     if search_string:
         search_string = search_string.strip()
+        graph_components = compute.graph_components_from_files(search_string)
+    else:
         graph_components = compute.graph_components_from_files()
 
-        return graph_components
+    return graph_components
 
 
 @app.route("/index", methods=["GET", "POST"])
