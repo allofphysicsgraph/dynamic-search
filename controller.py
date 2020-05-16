@@ -5,7 +5,7 @@ import os
 import json
 import shutil
 import time
-
+from werkzeug.routing import BaseConverter
 # https://docs.python.org/3/howto/logging.html
 import logging
 
@@ -118,21 +118,25 @@ def graph_components():
     return json.dumps(graph_components)
 
 
-@app.route("/ajax", methods=["GET", "POST"])
-def ajax():
-    if request.method == "POST":
-        logger.debug("request.form = %s", request.form)
-        # flash(str(request.form['text']))
-        search_string = False
-        request_obj = request
-        search_string = next(request.form.keys())
+#https://gist.github.com/ekayxu/5743138
+class RegexConverter(BaseConverter):
+    def __init__(self, url_map, *items):
+        super(RegexConverter, self).__init__(url_map)
+        self.regex = items[0]
 
-        if search_string:
-            search_string = search_string.strip()
+app.url_map.converters['regex'] = RegexConverter
 
-            graph_components = compute.graph_components_from_files(search_string)
-            print(search_string, "*" * 1000, graph_components)
-            return graph_components
+#@app.route("/ajax", methods=["GET", "POST"])
+@app.route('/<regex("ajax"):uid>-<slug>/')
+def example(uid, slug):
+    # flash(str(request.form['text']))
+    search_string = False
+    search_string = slug
+    if search_string:
+        search_string = search_string.strip()
+        graph_components = compute.graph_components_from_files(search_string)
+        print(search_string, "*" * 1000, graph_components)
+        return graph_components
 
 
 @app.route("/index", methods=["GET", "POST"])

@@ -15,10 +15,10 @@
   <body>
   <!-- https://gist.github.com/MalphasWats/3031823 -->
   <h1>Flask AJAX Test</h1>
-<form action="" method="POST">
+
 <input type="text" name="search_string" id="search_string">
-<input type="button" value="Submit" onclick="return loadXMLDoc()">
-</form>
+<input type="button" value="Submit" onclick="return draw_graph('ajax')">
+
 <div id="myDiv"></div>
 
 
@@ -46,7 +46,10 @@
  </center>
 </P>
 
-{% include '_d3_js.html' %}
+<script src="../static/d3.v5.js"></script>
+<script src="../static/ajax_call.js"></script>
+<script src='../static/_d3_custom.js'></script>
+<script>draw_graph(default_url)</script>
 {% include '_footer.html' %}
 
     </body>
