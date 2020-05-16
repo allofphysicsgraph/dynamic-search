@@ -56,15 +56,11 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
 
 
-
 class SearchString(Form):
     logger.info("[trace]")
     text = StringField(
-        "text",
-        validators=[validators.InputRequired(), validators.Length(max=1000)],
+        "text", validators=[validators.InputRequired(), validators.Length(max=1000)],
     )
-
-
 
 
 @app.before_request
@@ -111,30 +107,31 @@ def after_request(response):
     return response
 
 
-
 @app.route("/d3_intro", methods=["GET"])
 def d3_intro():
     return render_template("d3_intro.html")
+
 
 @app.route("/graph_components", methods=["GET"])
 def graph_components():
     graph_components = compute.graph_components_from_files()
     return json.dumps(graph_components)
 
+
 @app.route("/ajax", methods=["GET", "POST"])
 def ajax():
     if request.method == "POST":
         logger.debug("request.form = %s", request.form)
-        #flash(str(request.form['text']))
+        # flash(str(request.form['text']))
         search_string = False
         request_obj = request
-        search_string =next(request.form.keys())
-        
+        search_string = next(request.form.keys())
+
         if search_string:
             search_string = search_string.strip()
-            
+
             graph_components = compute.graph_components_from_files(search_string)
-            print(search_string,'*'*1000,graph_components)
+            print(search_string, "*" * 1000, graph_components)
             return graph_components
 
 
@@ -152,9 +149,10 @@ def index():
         flash(str(err))
         graph_components = ""
 
-    return render_template("index.html",
-        json_for_d3js=graph_components,
-        webform=webform)
+    return render_template(
+        "index.html", json_for_d3js=graph_components, webform=webform
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

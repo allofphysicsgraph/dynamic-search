@@ -10,9 +10,14 @@ function draw_graph(){
     var bordercolor='black';
     var color = d3.scaleOrdinal(d3.schemeCategory10);
     var url='http://localhost:5000/graph_components';
-    //d3.json("{{ url_for('static', filename=json_for_d3js) }}").then(function(graph) {
-    d3.json(url).then(function(graph) {
-    console.log(graph);
+   
+    var p = d3.json(url).then(function(graph){
+        return graph;
+    })
+
+    var p_resolve = Promise.resolve(p);
+
+    p_resolve.then(function(graph){
     var label = {
         'nodes': [],
         'links': []
@@ -204,8 +209,10 @@ function draw_graph(){
         if (!d3.event.active) graphLayout.alphaTarget(0);
         d.fx = null;
         d.fy = null;
-    }});
+    };
+});
 }
+
 draw_graph();
 </script>
 
