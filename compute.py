@@ -164,7 +164,9 @@ def graph_components_from_files(
     from compute import get_edge_list
     from compute import get_node_list
     from compute import get_transition_list
-
+    node_list_ids = []
+    filtered_transition_list = []
+    dct = {}
     logger.info("[trace]")
     static_path = "/home/user/dynamic-search/static/"
     data_source = static_path + "data_source/"
@@ -176,8 +178,21 @@ def graph_components_from_files(
         edge_list = filter_dct(pattern, edge_list)
         transition_list = filter_dct(pattern, transition_list)
 
-    dct = {"nodes": node_list, "links": transition_list}
+    if node_list:
+        for node in node_list:
+            node_list_ids.append(node['id'])
+
+    if transition_list:
+        for edge in transition_list:
+            if edge['source'] in node_list_ids and edge['target'] in node_list_ids:
+                filtered_transition_list.append(edge)
+
+    if node_list:
+        dct['nodes'] = node_list
+        
+    if filtered_transition_list:
+        dct["links"] = filtered_transition_list
+    
+    
+
     return dct
-
-
-# EOF

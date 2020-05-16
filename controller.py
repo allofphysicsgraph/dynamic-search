@@ -137,7 +137,6 @@ def example(uid, slug):
         graph_components = compute.graph_components_from_files(search_string)
     else:
         graph_components = compute.graph_components_from_files()
-
     return graph_components
 
 
