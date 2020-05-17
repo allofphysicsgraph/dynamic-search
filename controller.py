@@ -35,7 +35,7 @@ app.config.from_object(
 )  # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
 app.config[
     "UPLOAD_FOLDER"
-] = "/home/user/dynamic-search/static/my_graph.json"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+] = "/home/appuser/app/static/my_graph.json"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 app.config[
     "SEND_FILE_MAX_AGE_DEFAULT"
 ] = 0  # https://stackoverflow.com/questions/34066804/disabling-caching-in-flask

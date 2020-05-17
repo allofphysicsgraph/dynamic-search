@@ -168,7 +168,7 @@ def graph_components_from_files(
     filtered_transition_list = []
     dct = {}
     logger.info("[trace]")
-    static_path = "/home/user/dynamic-search/static/"
+    static_path = "/home/appuser/app/static/"
     data_source = static_path + "data_source/"
     node_list = get_node_list(data_source, "node_list.json")
     edge_list = get_edge_list(data_source, "edge_list.json")
