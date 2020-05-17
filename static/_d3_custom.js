@@ -1,5 +1,4 @@
 
-var default_url='http://localhost:5000/graph_components';
 
 
 function unfocus() {
@@ -36,6 +35,7 @@ function init(){
 }
 
 function draw_graph(url){
+    var default_url='http://localhost:5000/graph_components';
     var color = d3.scaleOrdinal(d3.schemeCategory10); 
     var container = init();
     
@@ -46,7 +46,6 @@ function draw_graph(url){
         else    {
             url = default_url;
         }
-    
         var p = d3.json(url).then(function(graph){
                 return graph;
             });
@@ -58,6 +57,8 @@ function draw_graph(url){
             'links': []
         };
 
+    d3.selectAll("links").remove();
+    d3.selectAll("circle").remove();
     var link = container.append("g").attr("class", "links")
         .selectAll("line")
         .data(graph.links)
@@ -65,15 +66,31 @@ function draw_graph(url){
         .append("line")
         .attr("stroke", "#aaa")
         .attr("stroke-width", "1px"); 
-        
-    var node = container.append("g").attr("class", "nodes")
+    
+    console.log(graph.nodes);
+    /*var node = container.append("g").attr("class", "nodes")
         .selectAll("g")
         .data(graph.nodes)
         .enter()
         .append("circle")
-        .attr("r", 5)
+        .attr("r", 9)
+        .attr('cx',50)
+        .attr('cy',50)
         .attr("fill", function(d) { return color(d.group); })
-        node.on("mouseover", focus).on("mouseout", unfocus);
+        node.on("mouseover", focus).on("mouseout", unfocus);*/
+
+    
+    var node = container.append("g").attr("class","nodes")
+    .append("circle")
+    .attr('r',10)
+    .attr('cx',100)
+    .attr('cy',100);
+
+    var node = container.append("g").attr('class','nodes')
+    .append("circle")
+    .attr('r',10)
+    .attr('cx',120)
+    .attr('cy',120);
 
     var tooltip = d3.select("body")
         .append("div")
@@ -104,6 +121,7 @@ function draw_graph(url){
         .force("link", d3.forceLink(graph.links).id(function(d) {return d.id; }).distance(50).strength(1))
         .on("tick", ticked);*/
 
+    /*
     var adjlist = [];
     graph.links.forEach(function(d) {
         adjlist[d.source.index + "-" + d.target.index] = true;
@@ -114,7 +132,7 @@ function draw_graph(url){
         return a == b || adjlist[a + "-" + b];
    }
 
-/*
+
     node.call(
         d3.drag()
             .on("start", dragstarted)
