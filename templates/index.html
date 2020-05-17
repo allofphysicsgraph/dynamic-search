@@ -10,9 +10,22 @@
 {% include '_js_head.html' %}
 
 
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+</script>
+
 
   </head>
   <body>
+
+    <h3 class="header">
+      If $ax^2+bx+c=0$, then $x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$.
+  </h3>
+  
+  
   <!-- https://gist.github.com/MalphasWats/3031823 -->
   <h1>Flask AJAX Test</h1>
 

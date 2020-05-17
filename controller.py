@@ -134,6 +134,7 @@ def example(uid, slug):
     search_string = slug
     if search_string:
         search_string = search_string.strip()
+        print(search_string,'*'*50)
         graph_components = compute.graph_components_from_files(search_string)
     else:
         graph_components = compute.graph_components_from_files()

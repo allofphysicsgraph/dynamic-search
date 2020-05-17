@@ -1,5 +1,6 @@
 
-
+var width = 800;
+var height = 800;
 
 function unfocus() {
     node.style("opacity", 1);
@@ -8,8 +9,7 @@ function unfocus() {
 
 
 function init(){
-    var width = 800;
-    var height = 800;
+    
     var border = 1;
     var bordercolor='black';
     var color = d3.scaleOrdinal(d3.schemeCategory10); 
@@ -57,40 +57,63 @@ function draw_graph(url){
             'links': []
         };
 
-    d3.selectAll("links").remove();
+    d3.selectAll("line").remove();
     d3.selectAll("circle").remove();
-    var link = container.append("g").attr("class", "links")
-        .selectAll("line")
-        .data(graph.links)
-        .enter()
-        .append("line")
-        .attr("stroke", "#aaa")
-        .attr("stroke-width", "1px"); 
-    
+
+
+    //var size = Object.keys(graph.links).length;
+    //console.log(size);
+    if (typeof(graph.links) != "undefined") {
+        var link = container.append("g").attr("class", "links")
+            .selectAll("line")
+            .data(graph.links)
+            .enter()
+            .append("line")
+            .attr("stroke", "#aaa")
+            .attr("stroke-width", "1px"); 
+    }
+
     console.log(graph.nodes);
-    /*var node = container.append("g").attr("class", "nodes")
+    
+    var node = container.append("g").attr("class", "nodes")
         .selectAll("g")
         .data(graph.nodes)
         .enter()
         .append("circle")
         .attr("r", 9)
-        .attr('cx',50)
-        .attr('cy',50)
         .attr("fill", function(d) { return color(d.group); })
-        node.on("mouseover", focus).on("mouseout", unfocus);*/
+        node.on("mouseover", focus).on("mouseout", unfocus);
 
+    function fixna(x) {
+            if (isFinite(x)) return x;
+            return 0;
+        }
+    function updateLink(link) {
+            link.attr("x1", function(d) { return fixna(d.source.x); })
+                .attr("y1", function(d) { return fixna(d.source.y); })
+                .attr("x2", function(d) { return fixna(d.target.x); })
+                .attr("y2", function(d) { return fixna(d.target.y); });
+        }
     
-    var node = container.append("g").attr("class","nodes")
-    .append("circle")
-    .attr('r',10)
-    .attr('cx',100)
-    .attr('cy',100);
+    function updateNode(node) {
+            node.attr("transform", function(d) {
+                return "translate(" + fixna(d.x) + "," + fixna(d.y) + ")";
+            });
+        }
+    function ticked() {
+            node.call(updateNode);
+            link.call(updateLink);
+            labelLayout.alphaTarget(0.3).restart();
+        }
+    var graphLayout = d3.forceSimulation(graph.nodes)
+        .force("charge", d3.forceManyBody().strength(-3000))
+        .force("center", d3.forceCenter(width / 2, height / 2))
+        .force("x", d3.forceX(width / 2).strength(1))
+        .force("y", d3.forceY(height / 2).strength(1))
+        .force("link", d3.forceLink(graph.links).id(function(d) {return d.id; }).distance(50).strength(1))
+        .on("tick", ticked);
+    
 
-    var node = container.append("g").attr('class','nodes')
-    .append("circle")
-    .attr('r',10)
-    .attr('cx',120)
-    .attr('cy',120);
 
     var tooltip = d3.select("body")
         .append("div")
@@ -109,18 +132,33 @@ function draw_graph(url){
     });
   
 
-    /*var labelLayout = d3.forceSimulation(label.nodes)
+    var labelLayout = d3.forceSimulation(label.nodes)
         .force("charge", d3.forceManyBody().strength(-50))
         .force("link", d3.forceLink(label.links).distance(0).strength(2));
 
-    var graphLayout = d3.forceSimulation(graph.nodes)
-        .force("charge", d3.forceManyBody().strength(-3000))
-        .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("x", d3.forceX(width / 2).strength(1))
-        .force("y", d3.forceY(height / 2).strength(1))
-        .force("link", d3.forceLink(graph.links).id(function(d) {return d.id; }).distance(50).strength(1))
-        .on("tick", ticked);*/
+    
+        function dragstarted(d) {
+            d3.event.sourceEvent.stopPropagation();
+            if (!d3.event.active) graphLayout.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+    
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+    
+        function dragended(d) {
+            if (!d3.event.active) graphLayout.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;}
 
+            node.call(
+                d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
     /*
     var adjlist = [];
     graph.links.forEach(function(d) {
@@ -133,11 +171,7 @@ function draw_graph(url){
    }
 
 
-    node.call(
-        d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended)
+  
     );*/
 
 
@@ -149,16 +183,9 @@ function draw_graph(url){
 
         /*
 
-    function ticked() {
-        node.call(updateNode);
-        link.call(updateLink);
-        labelLayout.alphaTarget(0.3).restart();
-    }
+    
 
-    function fixna(x) {
-        if (isFinite(x)) return x;
-        return 0;
-    }
+    
 
     function focus(d) {
         var index = d3.select(d3.event.target).datum().index;
@@ -173,40 +200,108 @@ function draw_graph(url){
 
     
 
-    function updateLink(link) {
-        link.attr("x1", function(d) { return fixna(d.source.x); })
-            .attr("y1", function(d) { return fixna(d.source.y); })
-            .attr("x2", function(d) { return fixna(d.target.x); })
-            .attr("y2", function(d) { return fixna(d.target.y); });
-    }
+    
 
-    function updateNode(node) {
-        node.attr("transform", function(d) {
-            return "translate(" + fixna(d.x) + "," + fixna(d.y) + ")";
-        });
-    }
-
-    function dragstarted(d) {
-        d3.event.sourceEvent.stopPropagation();
-        if (!d3.event.active) graphLayout.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-    }
-
-    function dragged(d) {
-        d.fx = d3.event.x;
-        d.fy = d3.event.y;
-    }
-
-    function dragended(d) {
-        if (!d3.event.active) graphLayout.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
+  
     };*/
 });
 }
 
 
 
+var margin = {
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 50
+  },
+  width = 500 - margin.left - margin.right,
+  height = 500 - margin.top - margin.bottom,
+        radius = Math.min(width,height)/2;
+
+var svg = d3.select("body").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("circle")
+    .attr("r", radius)      
+  .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
+    .style("stroke","steelblue")
+    .style("stroke-width","2px")
+    .style("fill", "none");
+
+// from http://stackoverflow.com/a/4652513/16363
+function reduce(numerator,denominator){
+  var gcd = function gcd(a,b){
+    return b ? gcd(b, a%b) : a;
+  };
+  gcd = gcd(numerator,denominator);
+  return [numerator/gcd, denominator/gcd];
+}
+
+var labels = [
+  {val: Math.PI/4, label: "$\\frac" + "{\\pi}4$"},
+  {val: Math.PI/2, label: "$\\frac" + "{\\pi}2$"},
+  {val: (3 * Math.PI) / 4, label: "$\\frac" + "{3\\pi}4$"},
+  {val: Math.PI, label: "$\\pi$"},
+  {val: (5 * Math.PI) / 4, label: "$\\frac" + "{5\\pi}4$"},
+  {val: (3 * Math.PI) / 2, label: "$\\frac" + "{3\\pi}2$"},
+  {val: (7 * Math.PI) / 4, label: "$\\frac" + "{7\\pi}4$"},
+  {val: (2 * Math.PI), label: "${2\\pi}$"},
+]
+
+labels.forEach(function(d){
+  var angle = d.val,
+      fudgeX = (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2)  ? -20 : 5,
+      fudgeY = (angle > 0 && angle < Math.PI)  ? -25 : 0,
+          x = radius *  Math.cos(angle),
+                y = radius *  Math.sin(angle);
+  
+  var posX = (width/2 + x),
+      posY = (height/2 - y);
+  
+  svg.append("g")
+      .attr("class", "tick")
+      .attr("transform", "translate(" + (posX + fudgeX) + "," + (posY + fudgeY)  + ")")
+      .append("text")  	
+      .text(
+        function(){         
+           return d.label;
+      }      
+      );
+  
+  svg.append("path")
+      .attr("d", "M" + width/2 + "," + height/2 + "L" + (width/2 + x) + "," + (height/2 - y))
+  .style("stroke","steelblue")
+  .style("stroke-width","2px");
+});
 
 
+
+setTimeout(() => {
+
+MathJax.Hub.Config({
+tex2jax: {
+  inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+  processEscapes: true
+}
+});
+
+MathJax.Hub.Register.StartupHook("End", function() {
+setTimeout(() => {
+      svg.selectAll('.tick').each(function(){
+      var self = d3.select(this),
+          g = self.select('text>span>svg');
+      g.remove();
+      self.append(function(){
+        return g.node();
+      });
+    });
+  }, 1);
+});
+
+MathJax.Hub.Queue(["Typeset", MathJax.Hub, svg.node()]);
+
+}, 1);
