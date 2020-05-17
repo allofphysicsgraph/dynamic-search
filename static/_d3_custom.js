@@ -2,19 +2,18 @@
 var default_url='http://localhost:5000/graph_components';
 
 
+function unfocus() {
+    node.style("opacity", 1);
+    link.style("opacity", 1);
+}
 
-    
-function draw_graph(url){
+
+function init(){
     var width = 800;
     var height = 800;
     var border = 1;
     var bordercolor='black';
-    var color = d3.scaleOrdinal(d3.schemeCategory10);  
-
-    function unfocus() {
-        node.style("opacity", 1);
-        link.style("opacity", 1);
-    }
+    var color = d3.scaleOrdinal(d3.schemeCategory10); 
 
     var svg = d3.select("#viz").attr("width", width).attr("height", height);
     var container = svg.append("g");
@@ -23,7 +22,7 @@ function draw_graph(url){
                 .scaleExtent([.1, 4])
                 .on("zoom", function() { container.attr("transform", d3.event.transform); })
         );
-   
+
     var borderPath = svg.append("rect")
         .attr("x", 0)
         .attr("y", 0)
@@ -32,7 +31,14 @@ function draw_graph(url){
         .style("stroke", bordercolor)
         .style("fill", "none")
         .style("stroke-width", border);
+    return container;
 
+}
+
+function draw_graph(url){
+    var color = d3.scaleOrdinal(d3.schemeCategory10); 
+    var container = init();
+    
     var search_string = document.getElementById('search_string').value;
         if (search_string.length > 0){
             url = 'http://localhost:5000/ajax-' + search_string;
@@ -46,14 +52,11 @@ function draw_graph(url){
             });
        
     var p_resolve = Promise.resolve(p);
-    
     p_resolve.then(function(graph){
             var label = {
             'nodes': [],
             'links': []
         };
-    
-
 
     var link = container.append("g").attr("class", "links")
         .selectAll("line")
@@ -72,7 +75,6 @@ function draw_graph(url){
         .attr("fill", function(d) { return color(d.group); })
         node.on("mouseover", focus).on("mouseout", unfocus);
 
-
     var tooltip = d3.select("body")
         .append("div")
         .style("position", "absolute")
@@ -89,7 +91,6 @@ function draw_graph(url){
         })
     });
   
-
 
     /*var labelLayout = d3.forceSimulation(label.nodes)
         .force("charge", d3.forceManyBody().strength(-50))
@@ -112,14 +113,6 @@ function draw_graph(url){
     function neigh(a, b) {
         return a == b || adjlist[a + "-" + b];
    }
-
-
-
-
-   
-
-
-
 
 /*
     node.call(
