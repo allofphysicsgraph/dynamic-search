@@ -9,8 +9,6 @@ def regex_and_or(pattern, list_of_strings_to_search, delimiter='\s+'):
 
     # default is to split each string in the corpus on spaces
 
-    # "data" is a list of strings
-
     >>> list_of_strings_to_search = ["Normally matches any character except a newline.", "Within square brackets the dot is literal."]
     >>> regex_and_or('(Normally|With) (anyf|char)? square', list_of_strings_to_search)
     ['Within square brackets the dot is literal. ']
