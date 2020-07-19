@@ -32,7 +32,7 @@ RUN useradd --create-home appuser
 WORKDIR /home/appuser/app
 RUN mkdir -p       /home/appuser/app/uploads
 USER appuser
-
+COPY config.yaml   /home/appuser/app/
 COPY templates     /home/appuser/app/templates
 COPY static        /home/appuser/app/static
 COPY  compute.py \
