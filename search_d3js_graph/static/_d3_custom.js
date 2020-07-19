@@ -82,7 +82,7 @@ function draw_graph(url) {
         .attr("stroke-width", "1px");
     }
 
-    console.log(graph.nodes);
+    //console.log(graph.nodes);
 
     var node = container
       .append("g")

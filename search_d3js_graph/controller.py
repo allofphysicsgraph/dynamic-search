@@ -140,6 +140,9 @@ def example(uid, slug):
         graph_components = compute.graph_components_from_files()
     return graph_components
 
+@app.route("/tree", methods=["GET"])
+def tree():
+    return render_template("tree.html")
 
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/", methods=["GET", "POST"])
