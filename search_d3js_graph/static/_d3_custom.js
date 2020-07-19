@@ -81,8 +81,7 @@ function draw_graph(url){
         .enter()
         .append("circle")
         .attr("r", 9)
-        .attr("fill", function(d) { return color(d.group); })
-        node.on("mouseover", focus).on("mouseout", unfocus);
+        .attr("fill", function(d) { return color(d.group); });
 
     function fixna(x) {
             if (isFinite(x)) return x;
@@ -115,12 +114,6 @@ function draw_graph(url){
     
 
 
-    var tooltip = d3.select("body")
-        .append("div")
-        .style("position", "absolute")
-        .style("z-index", "10")
-        .style("visibility", "hidden")
-        .text("a simple tooltip");
     
     graph.nodes.forEach(function(d, i) {
         label.nodes.push({node: d});
@@ -159,25 +152,20 @@ function draw_graph(url){
                     .on("start", dragstarted)
                     .on("drag", dragged)
                     .on("end", dragended));
-    /*
-    var adjlist = [];
-    graph.links.forEach(function(d) {
-        adjlist[d.source.index + "-" + d.target.index] = true;
-        adjlist[d.target.index + "-" + d.source.index] = true;
-    }); 
-
-    function neigh(a, b) {
-        return a == b || adjlist[a + "-" + b];
-   }
 
 
   
-    );*/
 
-
-    //tooltip
+    var tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden");
+	    
+//tooltip
     //http://plnkr.co/edit/JpVkqaZ1AmFdBbOMwMup?p=preview&preview
-    node.on("mouseover", function(){return tooltip.style("visibility", "visible");})
+    
+	    node.on("mouseover", function(){tooltip.text(this.__data__.id);return tooltip.style("visibility", "visible");})
 	.on("mousemove", function(){return tooltip.style("top", (d3.event.pageY-10)+"px").style("left",(d3.event.pageX+10)+"px");})
 	.on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
@@ -225,7 +213,12 @@ var svg = d3.select("body").append("svg")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
+svg.append("circle")
+    .attr("r", radius)      
+  .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
+    .style("stroke","steelblue")
+    .style("stroke-width","2px")
+    .style("fill", "none");
 
 // from http://stackoverflow.com/a/4652513/16363
 function reduce(numerator,denominator){
@@ -236,58 +229,3 @@ function reduce(numerator,denominator){
   return [numerator/gcd, denominator/gcd];
 }
 
-
-
-labels.forEach(function(d){
-  var angle = d.val,
-      fudgeX = (angle > Math.PI / 2 && angle < (3 * Math.PI) / 2)  ? -20 : 5,
-      fudgeY = (angle > 0 && angle < Math.PI)  ? -25 : 0,
-          x = radius *  Math.cos(angle),
-                y = radius *  Math.sin(angle);
-  
-  var posX = (width/2 + x),
-      posY = (height/2 - y);
-  
-  svg.append("g")
-      .attr("class", "tick")
-      .attr("transform", "translate(" + (posX + fudgeX) + "," + (posY + fudgeY)  + ")")
-      .append("text")  	
-      .text(
-        function(){         
-           return d.label;
-      }      
-      );
-  
-  svg.append("path")
-      .attr("d", "M" + width/2 + "," + height/2 + "L" + (width/2 + x) + "," + (height/2 - y))
-  .style("stroke","steelblue")
-  .style("stroke-width","2px");
-});
-
-
-
-setTimeout(() => {
-
-MathJax.Hub.Config({
-tex2jax: {
-  inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-  processEscapes: true
-}
-});
-
-MathJax.Hub.Register.StartupHook("End", function() {
-setTimeout(() => {
-      svg.selectAll('.tick').each(function(){
-      var self = d3.select(this),
-          g = self.select('text>span>svg');
-      g.remove();
-      self.append(function(){
-        return g.node();
-      });
-    });
-  }, 1);
-});
-
-MathJax.Hub.Queue(["Typeset", MathJax.Hub, svg.node()]);
-
-}, 1);
