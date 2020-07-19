@@ -22,8 +22,9 @@ logger = logging.getLogger(__name__)
 # global proc_timeout
 proc_timeout = 30
 
-from pudb import set_trace
-
+import yaml
+with open('config.yaml') as f:
+    config = yaml.safe_load(f)
 
 def process_file(
     file_path, file_name, readlines=False, w=False, a=False, data=False, strip=False
@@ -168,7 +169,7 @@ def graph_components_from_files(
     filtered_transition_list = []
     dct = {}
     logger.info("[trace]")
-    static_path = "/home/appuser/app/static/"
+    static_path = config['project_path'] + 'static/'
     data_source = static_path + "data_source/"
     node_list = get_node_list(data_source, "node_list.json")
     edge_list = get_edge_list(data_source, "edge_list.json")
