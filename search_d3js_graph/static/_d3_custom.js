@@ -1,6 +1,15 @@
-var width = 800;
-var height = 800;
+//https://stackoverflow.com/a/28241682
+var width = window.innerWidth
+|| document.documentElement.clientWidth
+|| document.body.clientWidth;
 
+width -= 50;
+
+var height = window.innerHeight
+|| document.documentElement.clientHeight
+|| document.body.clientHeight;
+
+height -= 50;
 function unfocus() {
   node.style("opacity", 1);
   link.style("opacity", 1);
@@ -207,8 +216,10 @@ var margin = {
     bottom: 50,
     left: 50,
   },
-  width = 500 - margin.left - margin.right,
-  height = 500 - margin.top - margin.bottom,
+
+  
+  width = width - margin.left - margin.right,
+  height = width - margin.top - margin.bottom,
   radius = Math.min(width, height) / 2;
 
 var svg = d3
@@ -219,10 +230,3 @@ var svg = d3
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg
-  .append("circle")
-  .attr("r", radius)
-  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-  .style("stroke", "steelblue")
-  .style("stroke-width", "2px")
-  .style("fill", "none");
