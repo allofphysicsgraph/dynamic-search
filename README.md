@@ -1,4 +1,7 @@
 # dynamic-search
+
+[![Join the chat at https://gitter.im/allofphysicsgraph/graph-search](https://badges.gitter.im/allofphysicsgraph/graph-search.svg)](https://gitter.im/allofphysicsgraph/graph-search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 search a graph using a webform
 
 The list of nodes is in compute.py and contains
