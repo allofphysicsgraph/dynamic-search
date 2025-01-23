@@ -37,4 +37,4 @@ ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0 
 
 # Command to run the Flask application as 'user' and within the virtual environment
-#CMD ["/opt/app/venv/bin/flask", "run"]
+CMD ["/opt/app/venv/bin/flask", "run"]
