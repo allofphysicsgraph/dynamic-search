@@ -23,8 +23,10 @@ logger = logging.getLogger(__name__)
 proc_timeout = 30
 
 import yaml
-with open('config.yaml') as f:
+
+with open("config.yaml") as f:
     config = yaml.safe_load(f)
+
 
 def process_file(
     file_path, file_name, readlines=False, w=False, a=False, data=False, strip=False
@@ -65,8 +67,8 @@ def filter_dct(pattern, dct, filter_keys=False, filter_values=True, exact=False)
     filtered_results = {}
     list_of_dcts = []
     if exact:
-        search = (
-            lambda x: True if re.findall(r"^{}$".format(pattern), str(x)) else False
+        search = lambda x: (
+            True if re.findall(r"^{}$".format(pattern), str(x)) else False
         )
     else:
         search = lambda x: True if re.findall("{}".format(pattern), str(x)) else False
@@ -165,11 +167,12 @@ def graph_components_from_files(
     from compute import get_edge_list
     from compute import get_node_list
     from compute import get_transition_list
+
     node_list_ids = []
     filtered_transition_list = []
     dct = {}
     logger.info("[trace]")
-    static_path = config['project_path'] + 'static/'
+    static_path = config["project_path"] + "static/"
     data_source = static_path + "data_source/"
     node_list = get_node_list(data_source, "node_list.json")
     edge_list = get_edge_list(data_source, "edge_list.json")
@@ -181,19 +184,17 @@ def graph_components_from_files(
 
     if node_list:
         for node in node_list:
-            node_list_ids.append(node['id'])
+            node_list_ids.append(node["id"])
 
     if transition_list:
         for edge in transition_list:
-            if edge['source'] in node_list_ids and edge['target'] in node_list_ids:
+            if edge["source"] in node_list_ids and edge["target"] in node_list_ids:
                 filtered_transition_list.append(edge)
 
     if node_list:
-        dct['nodes'] = node_list
-        
+        dct["nodes"] = node_list
+
     if filtered_transition_list:
         dct["links"] = filtered_transition_list
-    
-    
 
     return dct

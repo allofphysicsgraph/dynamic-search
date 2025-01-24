@@ -6,6 +6,7 @@ import json
 import shutil
 import time
 from werkzeug.routing import BaseConverter
+
 # https://docs.python.org/3/howto/logging.html
 import logging
 
@@ -33,12 +34,12 @@ app = Flask(__name__, static_folder="static")
 app.config.from_object(
     Config
 )  # https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iii-web-forms
-app.config[
-    "UPLOAD_FOLDER"
-] = "/home/appuser/app/static/my_graph.json"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
-app.config[
-    "SEND_FILE_MAX_AGE_DEFAULT"
-] = 0  # https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
+app.config["UPLOAD_FOLDER"] = (
+    "/home/appuser/app/static/my_graph.json"  # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
+)
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = (
+    0  # https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
+)
 app.config["DEBUG"] = True
 
 
@@ -59,7 +60,8 @@ if __name__ == "__main__":
 class SearchString(Form):
     logger.info("[trace]")
     text = StringField(
-        "text", validators=[validators.InputRequired(), validators.Length(max=1000)],
+        "text",
+        validators=[validators.InputRequired(), validators.Length(max=1000)],
     )
 
 
@@ -118,15 +120,17 @@ def graph_components():
     return json.dumps(graph_components)
 
 
-#https://gist.github.com/ekayxu/5743138
+# https://gist.github.com/ekayxu/5743138
 class RegexConverter(BaseConverter):
     def __init__(self, url_map, *items):
         super(RegexConverter, self).__init__(url_map)
         self.regex = items[0]
 
-app.url_map.converters['regex'] = RegexConverter
 
-#@app.route("/ajax", methods=["GET", "POST"])
+app.url_map.converters["regex"] = RegexConverter
+
+
+# @app.route("/ajax", methods=["GET", "POST"])
 @app.route('/<regex("ajax"):uid>-<slug>/')
 def example(uid, slug):
 
@@ -134,15 +138,17 @@ def example(uid, slug):
     search_string = slug
     if search_string:
         search_string = search_string.strip()
-        print(search_string,'*'*50)
+        print(search_string, "*" * 50)
         graph_components = compute.graph_components_from_files(search_string)
     else:
         graph_components = compute.graph_components_from_files()
     return graph_components
 
+
 @app.route("/tree", methods=["GET"])
 def tree():
     return render_template("tree.html")
+
 
 @app.route("/index", methods=["GET", "POST"])
 @app.route("/", methods=["GET", "POST"])

@@ -10,17 +10,16 @@ services:
     environment:
       - FLASK_APP=app.py # If needed, though should be default
       - FLASK_RUN_HOST=0.0.0.0 # To access from outside docker
-    expose:
-      - 127.0.0.1:5000
     ports:
-      - 127.0.0.1:5000:5000
+      - 5000:5000
   neo4j:
     image: neo4j:latest
     ports:
       - "7474:7474" # Browser UI
       - "7687:7687" # Bolt port
     environment:
-      NEO4J_AUTH: neo4j/password # Default credentials, change in production!
+      NEO4J_AUTH: neo4j/password 
+      # Default credentials, change in production!
     volumes:
       - neo4j_data:/data
       - neo4j_logs:/logs
