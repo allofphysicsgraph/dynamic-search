@@ -1,0 +1,28 @@
+services:
+  web:
+    build:
+      context: ./flask-app
+      dockerfile: Dockerfile
+    volumes:
+      - ./flask-app:/app # Mount for development, remove in production if not needed
+    depends_on:
+      - neo4j
+    environment:
+      - FLASK_APP=app.py # If needed, though should be default
+      - FLASK_RUN_HOST=0.0.0.0 # To access from outside docker
+    ports:
+      - 5000:5000
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474" # Browser UI
+      - "7687:7687" # Bolt port
+    environment:
+      NEO4J_AUTH: neo4j/password 
+      # Default credentials, change in production!
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+volumes:
+  neo4j_data:
+  neo4j_logs:
