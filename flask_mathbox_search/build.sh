@@ -1,13 +1,12 @@
 # Download and compile re2c from source
-ARG RE2C_VERSION=3.1
-RUN wget https://github.com/re2c/re2c/releases/download/${RE2C_VERSION}/re2c-${RE2C_VERSION}.tar.gz \
-    && tar xzf re2c-${RE2C_VERSION}.tar.gz \
-    && cd re2c-${RE2C_VERSION} \
+RE2C_VERSION=4.0.2
+
+wget https://github.com/skvadrik/re2c/releases/download/${RE2C_VERSION}/re2c-${RE2C_VERSION}.tar.xz ;
+
+tar -xf re2c-${RE2C_VERSION}.tar.xz ;
+cd re2c-${RE2C_VERSION} \
     && ./configure \
     && make \
-    && make install \
-    && cd .. \
-    && rm -rf re2c-${RE2C_VERSION}* # Clean up source files
+    && sudo make install;
 
-# Verify re2c installation (optional)
-RUN re2c --version
+re2c --version
