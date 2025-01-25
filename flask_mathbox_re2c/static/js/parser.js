@@ -1,0 +1,101 @@
+// Refactored JavaScript - goto statements removed and corrected cursor usage
+function parse_u32(yyinput) {
+    let yycursor = 0
+    let yycond = 0; // YYC_INIT = 0
+    let n = 0
+
+    const YYCOND_INIT = 0;
+    const YYCOND_BIN = 1;
+    const YYCOND_OCT = 2;
+    const YYCOND_DEC = 3;
+    const YYCOND_HEX = 4;
+
+    loop: while (true) {
+        let yych;
+        if (yycursor >= yyinput.length) { yych = 0; } else { yych = yyinput.charCodeAt(yycursor); }
+        switch (yycond) {
+        case YYCOND_INIT:
+            if (yych === 0) {
+                return null; // yy1: { return null }
+            } else if (yych >= 49 && yych <= 57) { // '1' - '9'
+                yycond = YYCOND_DEC; // yy6: { yycond = YYCOND_DEC; continue loop }
+                continue loop; // yy4: { yycond = YYCOND_DEC; continue loop } (combined with yy6)
+            } else if (yych === 48) { // '0'
+                yycursor++; // yy5: { yycursor += (1); ... }
+                yycond = YYCOND_OCT; // { yycond = YYCOND_OCT; continue loop }
+                continue loop;
+            } else if (yych === 98) { // 'b'
+                if (yyinput.substring(yycursor, yycursor + 2) === '0b') {
+                    yycursor += 2; // yy2: { yycursor += (2); ... }
+                    yycond = YYCOND_BIN; // { yycond = YYCOND_BIN; continue loop }
+                    continue loop;
+                } else {
+                    return null; // Fallback to default case behavior (yy1) if '0b' prefix not found
+                }
+            } else if (yych === 120) { // 'x'
+                if (yyinput.substring(yycursor, yycursor + 2) === '0x') {
+                    yycursor += 2; // yy3: { yycursor += (2); ... }
+                    yycond = YYCOND_HEX; // { yycond = YYCOND_HEX; continue loop }
+                    continue loop;
+                } else {
+                    return null; // Fallback to default case behavior (yy1) if '0x' prefix not found
+                }
+            } else {
+                return null; // yy1: { return null } (default case)
+            }
+            break; // Added break to prevent fallthrough
+
+        case YYCOND_BIN:
+            if (yych === 0) {
+                return n; // yy7: { return n }
+            } else if (yych === 48 || yych === 49) { // '0' or '1'
+                n = n * 2 + (yyinput.charCodeAt(yycursor) - 48); // yy8: { ... } (modified to use yycursor, not yycursor - 1)
+                yycursor++;
+                continue loop;
+            } else {
+                return n; // yy7: { return n }
+            }
+            break;
+
+        case YYCOND_OCT:
+            if (yych === 0) {
+                return n; // yy9: { return n }
+            } else if (yych >= 48 && yych <= 55) { // '0' - '7'
+                n = n * 8 + (yyinput.charCodeAt(yycursor) - 48); // yy10: { ... } (modified to use yycursor)
+                yycursor++;
+                continue loop;
+            } else {
+                return n; // yy9: { return n }
+            }
+            break;
+
+        case YYCOND_DEC:
+            if (yych === 0) {
+                return n; // yy11: { return n }
+            } else if (yych >= 48 && yych <= 57) { // '0' - '9'
+                n = n * 10 + (yyinput.charCodeAt(yycursor) - 48); // yy12: { ... } (modified to use yycursor)
+                yycursor++;
+                continue loop;
+            } else {
+                return n; // yy11: { return n }
+            }
+            break;
+
+        case YYCOND_HEX:
+            if (yych === 0) {
+                return n; // yy13: { return n }
+            } else if (yych >= 48 && yych <= 57) { // '0' - '9'
+                n = n * 16 + (yyinput.charCodeAt(yycursor) - 48); // yy14: { ... } (modified to use yycursor)
+                yycursor++;
+                continue loop;
+            } else if ((yych >= 65 && yych <= 70) || (yych >= 97 && yych <= 102)) { // 'A'-'F' or 'a'-'f'
+                n = n * 16 + (yyinput.charCodeAt(yycursor) - (yych >= 97 ? 87 : 55)); // yy15: { ... } (modified to use yycursor)
+                yycursor++;
+                continue loop;
+            } else {
+                return n; // yy13: { return n }
+            }
+            break;
+        }
+    }
+}

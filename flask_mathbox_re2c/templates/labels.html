@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MathBox - Label Everything with Filtering</title>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/three.min.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/OrbitControls.js') }}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/mathbox.min.js') }}"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/mathbox.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/katex.min.css') }}"
+    />
+    <script src="{{ url_for('static', filename='js/katex.min.js') }}"></script>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+  </head>
+  <body>
+    <div style="display: none">
+      <select id="button" style="padding: 10 30px; font-size: inherit">
+        <option value="HTML">HTML</option>
+      </select>
+    </div>
+
+    <div>
+        <label for="parseInput">Enter string to parse:</label>
+        <input type="text" id="parseInput" name="parseInput">
+        <div id="parseOutput">Output: </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/parser.js') }}"></script> <!-- parser.js -->
+    <script src="{{ url_for('static', filename='js/mathbox-script.js') }}"></script> <!-- mathbox-script.js -->
+    <script>
+        const parseInput = document.getElementById('parseInput');
+        const parseOutput = document.getElementById('parseOutput');
+
+        parseInput.addEventListener('input', function() {
+            const inputString = parseInput.value;
+            const result = parse_u32(inputString + "\0"); // Call parse_u32 from parser.js
+
+            if (result === null) {
+                parseOutput.textContent = "Output: null";
+            } else {
+                parseOutput.textContent = "Output: " + result;
+            }
+
+            filterMathBoxElements(result); // Call filterMathBoxElements from mathbox-script.js
+        });
+    </script>
+  </body>
+</html>
