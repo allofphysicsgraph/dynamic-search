@@ -109,11 +109,11 @@
       });
 
 
-
+         function neo4j_query(query) {
         // Neo4j Connection Details (Replace with your actual credentials)
             const neo4jUri = 'bolt://localhost:7687'; // Or your Neo4j Aura instance
             const neo4jUsername = 'neo4j';
-            const neo4jPassword = '';
+            const neo4jPassword = 'ASZXaszx';
 
             // Neo4j Driver Initialization
             const driver = neo4j.driver(neo4jUri, neo4j.auth.basic(neo4jUsername, neo4jPassword));
@@ -122,7 +122,7 @@
             const session = driver.session();
 
             // Cypher query to get a single node (any node for simplicity)
-            const cypherQuery = 'MATCH (n) RETURN n LIMIT 10';
+            const cypherQuery = query;
 
             // Run the query
             session.run(cypherQuery)
@@ -144,9 +144,14 @@
                     session.close();
                     driver.close(); // Close the driver after operations are complete
                 });
+         }
+          
+        
+         const query = "MATCH (n) where n.name =~ 'frac' return n limit 10";
+         neo4j_query(query);
 
-            function renderNodeInMathBox(nodes) {
-                        console.log('Retrieved Node:', nodes[1].get('n').properties.name);
+         function renderNodeInMathBox(nodes) {
+                        //console.log('Retrieved Node:', nodes[1].get('n').properties.name);
 
       view
         .point({
@@ -164,7 +169,7 @@
               el(
                 "latex",
                 null,
-                  "c = \\mathbf{F} \\pm " + nodes[i].get('n').properties.name  + " a^2 + " + j + " b^2"
+                  nodes[i].get('n').properties.name    
               )
             );
           },
