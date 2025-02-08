@@ -57,9 +57,10 @@ var view = mathbox
         bend: 0.25,
     });
 
+var node_count = 32;
 view
     .interval({
-        width: 48,
+        width: 2*node_count,
         expr: function (emit, x, i, t) {
             y = Math.sin(x + t / 4) * 0.5 + 0.75;
             emit(x, y);
@@ -67,15 +68,15 @@ view
         channels: 2,
     })
     .resample({
-        width: 16,
+        width: node_count,
     })
     .point({
         color: 0x30c0ff,
-        size: 60,
+        size: 80,
     })
     .html({
-        width: 8,
-        height: 1,
+        width: node_count,
+        height: 2,
         expr: function (emit, el, i, j, k, l, t) {
             // Emit latex
             var color = ["#30D0FF", "#30A0FF"][i % 2];
@@ -89,7 +90,7 @@ view
                 el(
                     latex,
                     { style: { color: color } },
-                    "\\sqrt{" +
+                    "\\sqrt{L^AT_EX + " +
                     (i + b + 1) +
                     " \\pi^{" +
                     symbols[a] +
