@@ -22,7 +22,6 @@
       - a minified version mathbox.min.js is also available;
       - recommend using a specific version (not @latest) in public sites
     -->
-
 <link rel="stylesheet" href=
 "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
 <script src=
@@ -95,7 +94,7 @@
       });
 
       view.interval({
-        width: 8,
+        width: 8 ,
         expr: function (emit, x, i, time) {
           y = Math.sin(x + (time * 0.2) / 4) * 0.7;
           emit(x, y);
@@ -103,15 +102,10 @@
         channels: 2,
       });
 
-    
-      view.repeat({
-        height: 3,
-        depth: 2,
-      });
       view.spread({
         unit: "absolute",
-        height: [0, 0, 0.5],
-        depth: [0, 0.5, 0],
+        height: [0, 0, 0.2],
+        depth: [0, 0.2, 0],
       });
 
 
@@ -128,15 +122,16 @@
             const session = driver.session();
 
             // Cypher query to get a single node (any node for simplicity)
-            const cypherQuery = 'MATCH (n) RETURN n LIMIT 1';
+            const cypherQuery = 'MATCH (n) RETURN n LIMIT 10';
 
             // Run the query
             session.run(cypherQuery)
                 .then(result => {
                     if (result.records.length > 0) {
-                        const node = result.records[0].get('n');
-                        console.log('Retrieved Node:', node);
-                        renderNodeInMathBox(node); // Function to render in MathBox
+                        console.log(result.records.length);
+                        const nodes = result.records;
+                        console.log('Retrieved Node:', nodes);
+                        renderNodeInMathBox(nodes); // Function to render in MathBox
                     } else {
                         document.getElementById('mathbox').textContent = 'No nodes found in the database.';
                     }
@@ -150,14 +145,8 @@
                     driver.close(); // Close the driver after operations are complete
                 });
 
-            function renderNodeInMathBox(node) {
-                        console.log('Retrieved Node:', node.properties.name);
-
-      view.spread({
-        unit: "absolute",
-        height: [0, 0, 0.5],
-        depth: [0, 0.5, 0],
-      });
+            function renderNodeInMathBox(nodes) {
+                        console.log('Retrieved Node:', nodes[1].get('n').properties.name);
 
       view
         .point({
@@ -166,7 +155,7 @@
         })
 
         .html({
-          width: 8,
+          width: nodes.length,
           height: 3,
           depth: 2,
           expr: function (emit, el, i, j, k, l, time) {
@@ -175,7 +164,7 @@
               el(
                 "latex",
                 null,
-                "c = \\mathbf{F} \\pm\\sqrt{" +node.properties.name +  i + " a^2 + " + j + " b^2}"
+                  "c = \\mathbf{F} \\pm " + nodes[i].get('n').properties.name  + " a^2 + " + j + " b^2"
               )
             );
           },
@@ -195,4 +184,3 @@
 </script>
 </body>
 </html>
-
