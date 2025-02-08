@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neo4j Node in MathBox</title>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/mathbox@latest/build/mathbox.css">
+    <script src="https://cdn.jsdelivr.net/npm/neo4j-driver/lib/browser/neo4j-web.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathbox@latest/build/bundle/mathbox.js"></script>
+
+    <style>
+        body { font-family: sans-serif; }
+        #mathbox { width: 800px; height: 600px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <h1>Neo4j Node Rendered with MathBox</h1>
+    <div id="mathbox"></div>
+
+    <script>
+
+            // Neo4j Connection Details (Replace with your actual credentials)
+            const neo4jUri = 'bolt://localhost:7687'; // Or your Neo4j Aura instance
+            const neo4jUsername = 'neo4j';
+            const neo4jPassword = '';
+
+            // Neo4j Driver Initialization
+            const driver = neo4j.driver(neo4jUri, neo4j.auth.basic(neo4jUsername, neo4jPassword));
+
+            // Session to run Cypher queries
+            const session = driver.session();
+
+            // Cypher query to get a single node (any node for simplicity)
+            const cypherQuery = 'MATCH (n) RETURN n LIMIT 1';
+
+            // Run the query
+            session.run(cypherQuery)
+                .then(result => {
+                    if (result.records.length > 0) {
+                        const node = result.records[0].get('n');
+                        console.log('Retrieved Node:', node);
+                        renderNodeInMathBox(node); // Function to render in MathBox
+                    } else {
+                        document.getElementById('mathbox').textContent = 'No nodes found in the database.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching node from Neo4j:', error);
+                    document.getElementById('mathbox').textContent = 'Error connecting to Neo4j or fetching node. See console.';
+                })
+                .finally(() => {
+                    session.close();
+                    driver.close(); // Close the driver after operations are complete
+                });
+
+            function renderNodeInMathBox(node) {
+
+            }
+    </script>
+</body>
+</html>
+

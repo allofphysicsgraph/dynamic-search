@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Neo4j Node Visualization</title>
+  <script src="https://cdn.jsdelivr.net/npm/neo4j-driver/lib/browser/neo4j-web.min.js"></script>
+
+  <!-- Install your choice of three.js version from CDN: -->
+  <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/three@0.137.0/build/three.min.js"
+  ></script>
+
+  <!-- Load a Controls instance, making sure that the version matches the Three.js version above: -->
+  <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/three@0.137.0/examples/js/controls/OrbitControls.js"
+  ></script>
+
+  <!-- Install the latest MathBox, either mathbox.js or mathbos.min.js -->
+  <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/mathbox@latest/build/bundle/mathbox.js"
+  ></script>
+
+  <!-- Include the MathBox CSS: -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/mathbox@latest/build/mathbox.css"
+  />
+
+
+  <style>
+    #mathbox {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Neo4j Node Visualization</h1>
+
+  <div id="mathbox"></div>
+
+  <script>
+    // Neo4j Connection Details (Replace with your actual credentials)
+    const neo4jUri = 'bolt://localhost:7687'; // Or your Neo4j connection string
+    const neo4jUser = 'neo4j';
+    const neo4jPassword = 'your_neo4j_password';
+
+    // Node ID to retrieve (Replace with the desired node's ID)
+    const nodeId = 1; // Example Node ID.  Ensure this ID exists.
+
+    // Initialize MathBox
+    const mathbox = mathBox({
+      plugins: ['core', 'controls', 'cursor', 'stats'],
+      controls: {
+        klass: THREE.OrbitControls,
+      },
+    });
+
+    const three = mathbox.three;
+    three.renderer.setClearColor(new THREE.Color(0xFFFFFF), 1.0); // Set background to white
+
+    const camera = mathbox.camera({
+      proxy: true,
+      position: [0, 0, 3], // Adjust camera position for better view
+    });
+
+    const view = mathbox.cartesian({
+      range: [[-2, 2], [-2, 2], [-2, 2]],
+      scale: [1, 1, 1],
+    });
+
+
+
+    // Function to fetch node data from Neo4j
+    async function fetchNodeData(nodeId) {
+      const driver = neo4j.driver(neo4jUri, neo4j.auth.basic(neo4jUser, neo4jPassword));
+      const session = driver.session();
+
+      try {
+        const result = await session.readTransaction(tx =>
+          tx.run('MATCH (n) WHERE id(n) = $nodeId RETURN n', { nodeId: neo4j.int(nodeId) })
+        );
+
+        if (result.records.length > 0) {
+          const node = result.records[0].get('n').properties;
+          console.log('Node Data:', node);
+          return node; // Return the node properties
+        } else {
+          console.error('Node not found with ID:', nodeId);
+          return null;
+        }
+      } catch (error) {
+        console.error('Error fetching node data:', error);
+        return null;
+      } finally {
+        await session.close();
+        await driver.close();
+      }
+    }
+
+
+    // Function to render the node data in MathBox
+    async function renderNode(nodeData) {
+      if (!nodeData) return; // Handle case where node data is null
+
+      // Extract relevant data for visualization (example: x, y, z coordinates)
+      //  Adapt this based on your node's properties
+      let x = 0;
+      let y = 0;
+      let z = 0;
+
+
+      // Check for existing x, y, and z properties. if they exist, use those for coordinates.
+      if (nodeData.x) {
+          x = nodeData.x;
+      }
+      if (nodeData.y) {
+          y = nodeData.y;
+      }
+      if (nodeData.z) {
+          z = nodeData.z;
+      }
+
+
+      // Create a point to represent the node
+      view.point({
+        color: 0x0077cc, // Blue color
+        size: 10,         // Point size
+        zIndex: 100       // Make sure the point is rendered on top
+      });
+
+      view.array({
+        data: [[x, y, z]], // Position the point at x, y, z
+        channels: 3,       // x, y, z
+        live: false,        // Data is static after initialization
+      }).set('position');
+
+
+
+      // Add text labels for the node properties (optional)
+      // This is a basic example, you might want to refine the positioning and formatting
+      let labelText = '';
+      for (const key in nodeData) {
+        if (nodeData.hasOwnProperty(key)) {
+          labelText += `${key}: ${nodeData[key]}\n`;
+        }
+      }
+
+
+      view.text({
+        data: [labelText],
+        weight: 'bold',
+        fontFamily: 'Arial',
+        fontSize: 20,
+      });
+
+      view.array({
+        data: [[x + 0.5, y + 0.5, z]], // Position the label slightly offset from the point
+        channels: 3,
+        live: false,
+      }).set('position');
+
+    }
+
+
+    // Main function to fetch data and render
+    async function main() {
+      const nodeData = await fetchNodeData(nodeId);
+      await renderNode(nodeData);
+    }
+
+    // Call the main function when the page loads
+    window.onload = main;
+  </script>
+
+</body>
+</html>
