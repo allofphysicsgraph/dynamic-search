@@ -4,14 +4,7 @@ docker build -t flask_test .; docker run -it --rm  --publish 5000:5000 flask_tes
 # MANUAL start
 docker build -t flask_test .; docker run -it --rm --entrypoint='' --publish 5000:5000 flask_test /bin/bash
 
-
-
-
-
-
 # list all containers
 docker ps -a
-
-
 
 https://docs.docker.com/develop/develop-images/dockerfile_best-practices/

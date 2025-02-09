@@ -1,21 +1,7 @@
 #!/usr/bin/env python3
-import json
-from functools import wraps
-import errno
-import signal
-import os
-import shutil  # move and copy files
-import datetime
-from subprocess import PIPE  # https://docs.python.org/3/library/subprocess.html
-import subprocess  # https://stackoverflow.com/questions/39187886/what-is-the-difference-between-subprocess-popen-and-subprocess-run/39187984
-import random
 import logging
-import collections
-from typing import Tuple, TextIO, List  # mypy
-from typing_extensions import (
-    TypedDict,
-)  # https://mypy.readthedocs.io/en/stable/more_types.html
-
+from typing import List  # mypy
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -33,15 +19,12 @@ def process_file(
 ):
     try:
         if w and data:
-            # print("Write")
-            # print(file_path,file_name)
             f = open(file_path + file_name, "w")
             f.write(data)
             f.close()
             return True
 
         if a and data:
-            # print("Append")
             f = open(file_path + file_name, "a+")
             f.write(data)
             f.close()
@@ -72,7 +55,6 @@ def filter_dct(pattern, dct, filter_keys=False, filter_values=True, exact=False)
         )
     else:
         search = lambda x: True if re.findall("{}".format(pattern), str(x)) else False
-    # set_trace()
     if filter_keys:
         if isinstance(dct, dict):
             for k, v in dct.items():
@@ -131,8 +113,6 @@ def get_node_list(path, file_name, node_keys=False, strip=True):
 
 
 def get_edge_list(path, file_name, edge_keys=False, strip=True):
-    import json
-
     if not edge_keys:
         edge_keys = ["source", "target", "value"]
     edge_list = []
@@ -146,7 +126,6 @@ def get_edge_list(path, file_name, edge_keys=False, strip=True):
 
 
 def get_transition_list(path, file_name, transition_keys=False, strip=True):
-    import json
 
     if not transition_keys:
         transition_keys = ["source", "target", "value"]
